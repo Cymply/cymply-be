@@ -16,6 +16,12 @@ class UserPersistenceAdapter(
         return null
     }
 
+    override fun loadUserBySub(sub: String): User? {
+        val userEntity = userJpaRepository.findBySub(sub)
+        userEntity?.let { return userEntityMapper.toUser(it) }
+        return null
+    }
+
     override fun saveUser(user: User): Long {
         val userEntity = userEntityMapper.toUserEntity(user)
         userJpaRepository.save(userEntity)

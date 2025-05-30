@@ -6,3 +6,4 @@ enum class UserProvider(
     GOOGLE("구글"),
     KAKAO("카카오")
 }
+

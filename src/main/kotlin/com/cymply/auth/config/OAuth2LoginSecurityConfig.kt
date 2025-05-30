@@ -1,6 +1,6 @@
 package com.cymply.auth.config
 
-import com.cymply.auth.application.service.CustomOAuth2UserService
+import com.cymply.auth.adapter.`in`.security.CustomOAuth2UserService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
@@ -31,7 +31,6 @@ class OAuth2LoginSecurityConfig(
                     .permitAll().anyRequest().authenticated()
             }
             .formLogin { it.disable() }
-            // /
             .oauth2Login {
                 it.userInfoEndpoint { oAuth2Config ->
                     oAuth2Config.userService(oAuth2UserService)
