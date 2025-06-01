@@ -4,10 +4,12 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.core.user.OAuth2User
 
-class CustomAuthUser(
+class CustomOAuth2User(
     val id: Long,
     val email: String,
-    val provider: String?
+    val provider: String,
+    val username: String?,
+    val birth: String?
 ) : OAuth2User {
     override fun getName(): String {
         return email
@@ -17,7 +19,9 @@ class CustomAuthUser(
         return mutableMapOf(
             ("id" to id),
             ("email" to email),
-            ("provider" to provider)
+            ("provider" to provider),
+            ("name" to name),
+            ("birth" to birth)
         )
     }
 

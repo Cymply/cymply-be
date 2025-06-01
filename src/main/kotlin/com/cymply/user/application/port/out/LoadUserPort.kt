@@ -4,4 +4,6 @@ import com.cymply.user.domain.User
 
 interface LoadUserPort {
     fun loadUserByEmail(email: String): User?
+
+    fun loadUserBySub(sub: String): User?
 }

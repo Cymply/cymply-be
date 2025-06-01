@@ -7,7 +7,7 @@ class User(
     val email: String,
     val password: String? = null,
     val name: String? = null,
-    val nickname: String? = null,
+    val birth: String? = null,
     /**
      * 소셜 플랫폼 종류
      */
@@ -22,46 +22,47 @@ class User(
         /***
          * 소셜 회원가입
          */
-        fun join(
+        fun of(
+            sub: String,
+            provider: String,
             email: String,
-            provider: String?,
-            sub: String?,
             name: String?,
-            nickname: String?,
+            birth: String?
         ) = User(
             email = email,
-            provider = provider?.let { UserProvider.valueOf(it.uppercase()) },
+            provider = provider.let { UserProvider.valueOf(it.uppercase()) },
+            sub = sub,
             name = name,
-            nickname = nickname,
-            sub = sub
+            birth = birth
+        )
+
+        /***
+         * 자체(이메일) 회원가입
+         */
+        fun of(
+            email: String,
+            password: String,
+            name: String?,
+        ) = User(
+            email = email,
+            password = password,
+            name = name
         )
     }
 
-    /***
-     * 자체(이메일) 회원가입
-     */
-    fun join(
-        email: String,
-        password: String,
-        nickname: String?,
-    ): User {
-        TODO("Not yet implemented")
+    fun getIdOrThrow() = id ?: throw IllegalStateException("User id is null.")
+
+    fun verifyValidUser() {
+        if (!isActiveUser()) {
+            throw IllegalArgumentException("Already withdraw User $id")
+        }
     }
 
-    fun verifyValidUser(provider: String?) {
-        provider?.let { verifyMethod(UserProvider.valueOf(provider.uppercase())) }
-        verifyActiveUser()
-    }
-
-    private fun verifyMethod(provider: UserProvider) {
+    fun verifyOAuth2Method(provider: UserProvider) {
         if (this.provider != provider) {
-            throw IllegalArgumentException("already join to${this.provider?.name}")
+            throw IllegalArgumentException("Invalid OAuth2 provider. Expected: $provider, but was: ${this.provider}")
         }
     }
 
-    private fun verifyActiveUser() {
-        if (deletedAt != null) {
-            throw IllegalArgumentException("already quit user $email")
-        }
-    }
+    fun isActiveUser() = deletedAt == null
 }
