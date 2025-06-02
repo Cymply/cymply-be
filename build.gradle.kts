@@ -24,6 +24,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     //    security
+    // security
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -32,6 +33,10 @@ dependencies {
     implementation("org.springframework.session:spring-session-core")
 
     //    mapper
+    // swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
+
+    // mapper
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.projectlombok:lombok-mapstruct-binding:0.2.0")
