@@ -27,7 +27,7 @@ class OAuth2LoginSecurityConfig(
             .csrf { it.disable() }
             .cors { CorsConfig().corsConfigurationSource() }
             .authorizeHttpRequests {
-                it.requestMatchers("/", "/oauth2/**", "/api/public/**")
+                it.requestMatchers("/", "/oauth2/**", "/api/public/**", "/swagger-ui/**", "/api-docs/**", "/api/v1/**")
                     .permitAll().anyRequest().authenticated()
             }
             .formLogin { it.disable() }
