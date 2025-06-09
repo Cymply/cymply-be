@@ -1,6 +1,9 @@
 package com.cymply.auth.config
 
+import com.cymply.auth.adapter.`in`.security.PrincipalDetail
 import com.cymply.auth.adapter.`in`.security.CustomOAuth2UserService
+import com.cymply.common.util.JwtUtils
+import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
@@ -8,12 +11,12 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler
-import org.springframework.stereotype.Component
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.web.authentication.AuthenticationFailureHandler
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
+import org.springframework.stereotype.Component
 
 @Configuration
 class OAuth2LoginSecurityConfig(
@@ -27,7 +30,10 @@ class OAuth2LoginSecurityConfig(
             .csrf { it.disable() }
             .cors { CorsConfig().corsConfigurationSource() }
             .authorizeHttpRequests {
-                it.requestMatchers("/", "/oauth2/**", "/api/public/**", "/swagger-ui/**", "/api-docs/**", "/api/v1/**")
+                it.requestMatchers(
+                    "/", "/oauth2/**", "/api/public/**",
+                    "/swagger-ui/**", "/api-docs/**", "/api/v1/**"
+                )
                     .permitAll().anyRequest().authenticated()
             }
             .formLogin { it.disable() }
@@ -47,26 +53,52 @@ class OAuth2LoginSecurityConfig(
 
 @Component
 class OAuth2SuccessHandler(
-) : AuthenticationSuccessHandler {
+    val jwtUtils: JwtUtils
+) : SimpleUrlAuthenticationSuccessHandler() {
+
+    companion object {
+        const val ACCESS_TOKEN_KEY = "AccessToken"
+        const val REFRESH_TOKEN_KEY = "RefreshToken"
+        const val ACCESS_TOKEN_EXPIRES = (60 * 60 * 1000).toLong()  // 1 hour
+        const val REFRESH_TOKEN_EXPIRES = (7 * 24 * 60 * 60 * 1000).toLong()  // 7 days
+        const val TEMPORAL_TOKEN_EXPIRES = (10 * 60 * 1000).toLong()  // 10 min
+    }
+
     override fun onAuthenticationSuccess(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        authentication: Authentication
+        request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
     ) {
-        response.status = HttpStatus.OK.value()
-        response.sendRedirect("http://localhost:3000/")
+        val principal = authentication.principal as PrincipalDetail
+
+        if (principal.isNew) {
+            val at = jwtUtils.generate(principal.attributes, TEMPORAL_TOKEN_EXPIRES)
+            setCookie(response, ACCESS_TOKEN_KEY, at)
+            response.status = HttpStatus.OK.value()
+            response.sendRedirect("http://localhost:3000/signup")
+        } else {
+            val at = jwtUtils.generate(principal.attributes, ACCESS_TOKEN_EXPIRES)
+            val rt = jwtUtils.generate(principal.attributes, REFRESH_TOKEN_EXPIRES)
+            setCookie(response, ACCESS_TOKEN_KEY, at)
+            setCookie(response, REFRESH_TOKEN_KEY, rt)
+            response.status = HttpStatus.OK.value()
+            response.sendRedirect("http://localhost:3000/")
+        }
+    }
+
+    private fun setCookie(response: HttpServletResponse, key: String, value: String) {
+        val cookie = Cookie(key, value)
+        cookie.path = "/"
+        cookie.isHttpOnly = true
+        cookie.maxAge = 60
+        response.addCookie(cookie)
     }
 }
 
 @Component
 class OAuth2FailureHandler(
-) : AuthenticationFailureHandler {
+) : SimpleUrlAuthenticationFailureHandler() {
     override fun onAuthenticationFailure(
-        request: HttpServletRequest,
-        response: HttpServletResponse,
-        exception: AuthenticationException?
+        request: HttpServletRequest, response: HttpServletResponse, exception: AuthenticationException?
     ) {
         response.status = HttpStatus.UNAUTHORIZED.value()
-        response.sendRedirect("http://localhost:3000/login/fail")
     }
 }

@@ -10,15 +10,19 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 
 @Component
-class JwtUtil(
-    @Value("\${spring.jwt.secret}") private val secret: String
+class JwtUtils(
+    @Value("\${spring.jwt.secret}")
+    private val secret: String
 ) {
-    companion object {
-        const val USERNAME_KEY = "username"
-        const val ROLE_KEY = "role"
-    }
-
     private lateinit var key: SecretKey
+
+    companion object {
+        const val ID_KEY = "id"
+        const val ISS_KEY = "api.cymply.com"
+        const val ACCESS_TOKEN_EXPIRATION_IN_SECONDS = (24 * 60 * 60 * 1000).toLong()  // 1 day
+        const val REFRESH_TOKEN_EXPIRATION_IN_SECONDS = (7 * 24 * 60 * 60 * 1000).toLong()  // 7 day
+        const val TEMPORARY_TOKEN_EXPIRATION_IN_SECONDS = (10 * 60 * 1000).toLong() // 10 min
+    }
 
     @PostConstruct
     fun init() {
@@ -28,18 +32,11 @@ class JwtUtil(
         )
     }
 
-    fun getUsername(token: String): String {
+    fun getId(token: String): String {
         return Jwts.parser().verifyWith(key).build()
             .parseSignedClaims(token)
             .payload
-            .get(USERNAME_KEY, String::class.java)
-    }
-
-    fun getRole(token: String): String {
-        return Jwts.parser().verifyWith(key).build()
-            .parseSignedClaims(token)
-            .payload
-            .get(ROLE_KEY, String::class.java)
+            .get(ID_KEY, String::class.java)
     }
 
     fun isExpired(token: String): Boolean {
@@ -50,14 +47,13 @@ class JwtUtil(
             .before(Date())
     }
 
-    fun generate(username: String, role: String, expired: Long = 1000): String {
+    fun generate(identity: Map<String, Any?>, expired: Long = 1000): String {
         return Jwts.builder()
-            .claim(USERNAME_KEY, username)
-            .claim(ROLE_KEY, role)
+            .issuer(ISS_KEY)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
+            .claims().add(identity).and()
             .compact()
     }
-
 }
