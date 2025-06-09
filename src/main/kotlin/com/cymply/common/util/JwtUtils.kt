@@ -17,7 +17,7 @@ class JwtUtils(
     private lateinit var key: SecretKey
 
     companion object {
-        const val ID_KEY = "id"
+        const val IDENTITY_KEY = "identity"
         const val ISS_KEY = "api.cymply.com"
         const val ACCESS_TOKEN_EXPIRATION_IN_SECONDS = (24 * 60 * 60 * 1000).toLong()  // 1 day
         const val REFRESH_TOKEN_EXPIRATION_IN_SECONDS = (7 * 24 * 60 * 60 * 1000).toLong()  // 7 day
@@ -32,11 +32,14 @@ class JwtUtils(
         )
     }
 
-    fun getId(token: String): String {
-        return Jwts.parser().verifyWith(key).build()
+    fun getIdentity(token: String): Map<String, Any?> {
+        return Jwts
+            .parser()
+            .verifyWith(key)
+            .build()
             .parseSignedClaims(token)
             .payload
-            .get(ID_KEY, String::class.java)
+            .get(IDENTITY_KEY, Map::class.java) as Map<String, Any?>
     }
 
     fun isExpired(token: String): Boolean {
@@ -48,12 +51,16 @@ class JwtUtils(
     }
 
     fun generate(identity: Map<String, Any?>, expired: Long = 1000): String {
+        val claims = mapOf(
+            IDENTITY_KEY to identity
+        )
+
         return Jwts.builder()
             .issuer(ISS_KEY)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
-            .claims().add(identity).and()
+            .claims(claims)
             .compact()
     }
 }

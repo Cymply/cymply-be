@@ -15,7 +15,7 @@ class UserGetController {
         return principal
     }
 
-    @PostMapping("/join/oauth2")
+    @PostMapping("/signup/oauth2")
     fun registerUser(@AuthenticationPrincipal principal: OAuth2User): OAuth2User {
         return principal
     }

@@ -1,5 +1,7 @@
 package com.cymply.auth.adapter.`in`.security
 
+import com.cymply.auth.adapter.`in`.security.dto.OAuth2UserAccount
+import com.cymply.auth.adapter.`in`.security.dto.PrincipalDetail
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -14,10 +16,9 @@ class CustomOAuth2UserService(
         val oauth = super.loadUser(request)
         val provider = request.clientRegistration.registrationId.uppercase()
         val account = OAuth2UserAccount.from(provider, oauth)
+        getUserUseCase.getActiveUser(sub = oauth.name, provider = provider)
+            ?: return PrincipalDetail(account.getAttributes())
 
-        val user = getUserUseCase.getActiveUser(sub = oauth.name, provider = provider)
-            ?: return PrincipalDetail(attributes = account.getAttributes())
-
-        return PrincipalDetail(user.id, account.getAttributes())
+        return PrincipalDetail(account.getAttributes())
     }
 }
