@@ -7,4 +7,6 @@ interface LoadUserPort {
     fun loadUserById(id: Long): User
 
     fun loadUserBySubAndProvider(sub: String, provider: UserProvider): User?
+
+    fun loadUserByNickname(nickname: String): User?
 }

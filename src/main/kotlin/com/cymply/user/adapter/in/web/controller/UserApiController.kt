@@ -40,10 +40,10 @@ interface UserApiController {
     fun checkAvailableNickname(
         @AuthenticationPrincipal principal: PrincipalDetail,
         @PathVariable nickname: String
-    ): com.cymply.common.response.ApiResponse<Void>
+    ): com.cymply.common.response.ApiResponse<Boolean?>
 
     @PostMapping("/signup/oauth2")
     fun signupOAuth2User(
         @AuthenticationPrincipal principal: PrincipalDetail,
-    ): com.cymply.common.response.ApiResponse<Void>
+    ): com.cymply.common.response.ApiResponse<Unit>
 }

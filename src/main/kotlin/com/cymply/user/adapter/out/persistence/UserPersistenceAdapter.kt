@@ -23,6 +23,11 @@ class UserPersistenceAdapter(
         return userEntityMapper.from(userEntity)
     }
 
+    override fun loadUserByNickname(nickname: String): User? {
+        val userEntity = userJpaRepository.findByNickname(nickname) ?: return null
+        return userEntityMapper.from(userEntity)
+    }
+
     override fun saveUser(user: User): Long {
         val userEntity = userEntityMapper.from(user)
         userJpaRepository.save(userEntity)
