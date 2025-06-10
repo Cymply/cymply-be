@@ -7,9 +7,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component
 class OAuth2SuccessHandler(
     val jwtUtils: JwtUtils
 ) : SimpleUrlAuthenticationSuccessHandler() {
-
     companion object {
         const val ACCESS_TOKEN_KEY = "AccessToken"
         const val REFRESH_TOKEN_KEY = "RefreshToken"
@@ -34,7 +31,6 @@ class OAuth2SuccessHandler(
         if (!principal.authorities.contains(SimpleGrantedAuthority("ROLE_USER"))) {
             val at = jwtUtils.generate(principal.attributes, TEMPORAL_TOKEN_EXPIRES)
             setCookie(response, ACCESS_TOKEN_KEY, at)
-
             response.status = HttpStatus.OK.value()
             response.sendRedirect("http://localhost:3000/signup")
         } else {
@@ -43,7 +39,6 @@ class OAuth2SuccessHandler(
 
             setCookie(response, ACCESS_TOKEN_KEY, at)
             setCookie(response, REFRESH_TOKEN_KEY, rt)
-
             response.status = HttpStatus.OK.value()
             response.sendRedirect("http://localhost:3000/")
         }
@@ -55,15 +50,5 @@ class OAuth2SuccessHandler(
         cookie.isHttpOnly = true
         cookie.maxAge = 60
         response.addCookie(cookie)
-    }
-}
-
-@Component
-class OAuth2FailureHandler(
-) : SimpleUrlAuthenticationFailureHandler() {
-    override fun onAuthenticationFailure(
-        request: HttpServletRequest, response: HttpServletResponse, exception: AuthenticationException?
-    ) {
-        response.status = HttpStatus.UNAUTHORIZED.value()
     }
 }

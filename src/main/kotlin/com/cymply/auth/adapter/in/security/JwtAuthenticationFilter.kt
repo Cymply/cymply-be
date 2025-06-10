@@ -22,21 +22,18 @@ class JwtAuthenticationFilter(
     ) {
         try {
             val authorization = request.getHeader("Authorization")
-
             if (authorization != null && authorization.startsWith("Bearer ")) {
                 val token = authorization.removePrefix("Bearer ").trim()
-                val identity = jwtUtils.getIdentity(token)
-
-                val role = listOf(SimpleGrantedAuthority("ROLE_USER"))
+                val identity = jwtUtils.getIdentities(token)
 
                 val principal = PrincipalDetail( attributes = identity)
+                val role = listOf(SimpleGrantedAuthority("ROLE_USER"))
                 val authentication = UsernamePasswordAuthenticationToken(principal, null, role)
                 SecurityContextHolder.getContext().authentication = authentication
             }
             filterChain.doFilter(request, response)
 
         } catch (e: Exception) {
-            println(e.message)
             SecurityContextHolder.clearContext()
             throw Exception("Fail authentication")
         } catch (e: ExpiredJwtException) {

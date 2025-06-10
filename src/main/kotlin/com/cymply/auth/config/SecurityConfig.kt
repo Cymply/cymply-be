@@ -10,10 +10,9 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
-class OAuth2LoginSecurityConfig(
+class SecurityConfig(
     private val oAuth2UserService: CustomOAuth2UserService,
     private val oAuth2SuccessHandler: OAuth2SuccessHandler,
-    private val oAuth2FailureHandler: OAuth2FailureHandler,
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 ) {
@@ -26,6 +25,9 @@ class OAuth2LoginSecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        /**
+         * 보안 및 인증 방식 설정
+         */
         http
             .csrf { it.disable() }
             .cors { CorsConfig().corsConfigurationSource() }
@@ -50,7 +52,7 @@ class OAuth2LoginSecurityConfig(
         http.oauth2Login { config ->
             config.userInfoEndpoint { it.userService(oAuth2UserService) }
                 .successHandler(oAuth2SuccessHandler)
-                .failureHandler(oAuth2FailureHandler)
+                .failureHandler(OAuth2FailureHandler())
         }
 
         return http.build()
