@@ -54,9 +54,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
-            docker stop cymply-be || true
-            docker rm cymply-be || true
+            echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
+            sudo docker stop cymply-be || true
+            sudo docker rm cymply-be || true
             
             cat <<EOF > /home/ubuntu/cymply.env
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
@@ -65,10 +66,10 @@ jobs:
             KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
             EOF
             
-            docker run -d \
+            sudo docker run -d \
               --env-file /home/ubuntu/cymply.env \
               --name cymply-be \
               -p 8080:8080 \
               ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
             
-            docker image prune -f
+            sudo docker image prune -f
