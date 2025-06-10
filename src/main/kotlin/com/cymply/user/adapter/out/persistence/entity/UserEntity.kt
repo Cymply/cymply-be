@@ -1,9 +1,8 @@
 package com.cymply.user.adapter.out.persistence.entity
 
 import com.cymply.common.model.BaseTimeEntity
-import com.cymply.common.model.Gender
+import com.cymply.user.domain.User
 import jakarta.persistence.*
-import java.time.LocalDate
 
 @Entity
 @Table(name = "users")
@@ -15,17 +14,16 @@ abstract class UserEntity(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long? = null,
 
+    @Enumerated(EnumType.STRING)
+    val role: User.Role,
+
     @Column(nullable = false, unique = true)
     val email: String,
 
     @Column(unique = true)
     val nickname: String,
 
-    val name: String? = null,
-
-    @Enumerated(EnumType.STRING)
-    val gender: Gender? = null,
-
-    val birth: LocalDate? = null
+    @Embedded
+    val profile: UserEntityProfile
 ) : BaseTimeEntity()
 

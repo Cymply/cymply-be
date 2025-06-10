@@ -1,30 +1,23 @@
 package com.cymply.user.adapter.out.persistence.entity
 
-import com.cymply.common.model.Gender
+import com.cymply.user.domain.User
 import com.cymply.user.domain.UserProvider
 import jakarta.persistence.*
-import java.time.LocalDate
 
 @Entity
-@DiscriminatorValue("OAUTH2_USER")
+@DiscriminatorValue("OAUTH2")
 class OAuth2UserEntity(
     id: Long? = null,
-
+    role: User.Role,
     email: String,
-
     nickname: String,
-
-    name: String?,
-
-    gender: Gender,
-
-    birth: LocalDate,
+    profile: UserEntityProfile,
 
     @Column(unique = true)
-    val sub: String? = null,
+    val sub: String,
 
     @Enumerated(EnumType.STRING)
-    val provider: UserProvider? = null
+    val provider: UserProvider
 
-) : UserEntity(id, email, nickname, name, gender, birth)
+) : UserEntity(id, role, email, nickname, profile)
 

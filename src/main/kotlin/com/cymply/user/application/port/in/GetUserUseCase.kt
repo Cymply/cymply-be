@@ -4,5 +4,7 @@ import com.cymply.user.application.service.UserSimpleInfo
 
 
 interface GetUserUseCase {
+    fun getActiveUserOrElseThrow(id: Long): UserSimpleInfo
+
     fun getActiveUser(provider: String, sub: String): UserSimpleInfo?
 }

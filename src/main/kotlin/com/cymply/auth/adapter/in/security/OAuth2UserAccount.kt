@@ -1,4 +1,4 @@
-package com.cymply.auth.adapter.`in`.security.dto
+package com.cymply.auth.adapter.`in`.security
 
 import org.springframework.security.oauth2.core.user.OAuth2User
 

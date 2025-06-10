@@ -5,7 +5,7 @@ import com.cymply.user.domain.User
 data class UserSimpleInfo(
     val id: Long,
     val email: String,
-    val nickname: String?,
+    val nickname: String,
     val name: String?
 ) {
     companion object {

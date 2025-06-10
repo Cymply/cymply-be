@@ -1,6 +1,6 @@
 package com.cymply.auth.config
 
-import com.cymply.auth.adapter.`in`.security.dto.PrincipalDetail
+import com.cymply.auth.adapter.`in`.security.PrincipalDetail
 import com.cymply.common.util.JwtUtils
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest

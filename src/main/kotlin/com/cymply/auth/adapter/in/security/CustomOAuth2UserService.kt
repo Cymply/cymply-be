@@ -1,7 +1,5 @@
 package com.cymply.auth.adapter.`in`.security
 
-import com.cymply.auth.adapter.`in`.security.dto.OAuth2UserAccount
-import com.cymply.auth.adapter.`in`.security.dto.PrincipalDetail
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
