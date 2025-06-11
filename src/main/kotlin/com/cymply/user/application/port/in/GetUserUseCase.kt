@@ -1,8 +1,10 @@
 package com.cymply.user.application.port.`in`
 
+import com.cymply.user.application.service.UserSimpleInfo
+
 
 interface GetUserUseCase {
-    fun getUserByEmail(email: String): UserInfo?
+    fun getActiveUserOrElseThrow(id: Long): UserSimpleInfo
 
-    fun getActiveUser(provider: String, sub: String): UserInfo?
+    fun getActiveUser(provider: String, sub: String): UserSimpleInfo?
 }
