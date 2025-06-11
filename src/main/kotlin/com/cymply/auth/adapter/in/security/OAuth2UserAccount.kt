@@ -18,16 +18,16 @@ data class OAuth2UserAccount(
         }
 
         private fun fromGoogleAttribute(attributes: Map<String?, Any>): OAuth2UserAccount {
-            val sub = attributes["sub"] as String
-            val email = attributes["email"] as String
+            val sub = attributes["sub"]?.toString() ?: throw IllegalArgumentException("sub is null")
+            val email = attributes["email"]?.toString() ?: throw IllegalArgumentException("email is null")
             val name = attributes["name"] as String
             return OAuth2UserAccount("GOOGLE", sub, email, name)
         }
 
         private fun fromKakaoAttribute(attributes: Map<String?, Any>): OAuth2UserAccount {
-            val sub = attributes["id"] as String
+            val sub = attributes["id"]?.toString() ?: throw IllegalArgumentException("sub is null")
             val account = attributes["kakao_account"] as Map<*, *>
-            val email = account["email"] as String
+            val email = account["email"]?.toString() ?: throw IllegalArgumentException("email is null")
             val name = account["name"] as? String
             return OAuth2UserAccount("KAKAO", sub, email, name)
         }
