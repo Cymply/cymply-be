@@ -12,14 +12,15 @@ import javax.crypto.spec.SecretKeySpec
 @Component
 class JwtUtils(
     @Value("\${spring.jwt.secret}")
-    private val secret: String
+    private val secret: String,
+
+    @Value("\${spring.jwt.keys.identities}")
+    private val identitiesKey: String,
+
+    @Value("\${spring.jwt.keys.iss}")
+    private val issKey: String,
 ) {
     private lateinit var key: SecretKey
-
-    companion object {
-        const val IDENTITIES_KEY = "identities"
-        const val ISS_KEY = "api.cymply.com"
-    }
 
     @PostConstruct
     fun init() {
@@ -36,7 +37,7 @@ class JwtUtils(
             .build()
             .parseSignedClaims(token)
             .payload
-            .get(IDENTITIES_KEY, Map::class.java) as Map<String, Any?>
+            .get(identitiesKey, Map::class.java) as Map<String, Any?>
     }
 
     fun isExpired(token: String): Boolean {
@@ -49,11 +50,11 @@ class JwtUtils(
 
     fun generate(identity: Map<String, Any?>, expired: Long = 1000): String {
         return Jwts.builder()
-            .issuer(ISS_KEY)
+            .issuer(issKey)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
-            .claims(mapOf(IDENTITIES_KEY to identity))
+            .claims(mapOf(identitiesKey to identity))
             .compact()
     }
 }
