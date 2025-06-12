@@ -4,7 +4,7 @@ import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.LetterResponse
 import com.cymply.letter.adapter.`in`.web.dto.SendLetterRequest
 import com.cymply.letter.adapter.`in`.web.dto.SenderGroupedLettersResponse
-import com.cymply.music.adapter.`in`.web.dto.MusicResponse
+import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -16,7 +16,7 @@ class LetterController: LetterApiController {
     override fun getLetter(
         @PathVariable id: Long
     ): ApiResponse<LetterResponse> {
-        return ApiResponse.success(LetterResponse(1L, "", "", LocalDateTime.now(), MusicResponse(1L, "", "", "")))
+        return ApiResponse.success(LetterResponse(1L, "", "", LocalDateTime.now(), SearchMusicResponse("", "", "")))
     }
 
     @PostMapping
