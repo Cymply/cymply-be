@@ -1,5 +1,6 @@
 package com.cymply.music.adapter.`in`.web.dto
 
+import com.cymply.music.application.port.dto.SearchMusicQuery
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "음악 검색 요청 DTO")
@@ -13,4 +14,11 @@ data class SearchMusicRequest(
 
     @Schema(description = "페이지 번호", example = "1")
     val page: Int = 1
-)
+) {
+    fun toQuery(): SearchMusicQuery =
+        SearchMusicQuery(
+            keyword = keyword,
+            limit = limit,
+            page = page
+        )
+}

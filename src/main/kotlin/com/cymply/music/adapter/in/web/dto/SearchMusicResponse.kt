@@ -3,11 +3,8 @@ package com.cymply.music.adapter.`in`.web.dto
 import com.cymply.music.application.port.dto.SearchMusicResult
 import io.swagger.v3.oas.annotations.media.Schema
 
-@Schema(description = "음악 상세 응답 DTO")
-data class MusicResponse(
-
-    @field:Schema(description = "음악 ID", example = "1000")
-    val id: Long?,
+@Schema(description = "음악 검색 응답 DTO")
+data class SearchMusicResponse(
 
     @field:Schema(description = "음악 제목", example = "좋은 날")
     val title: String,
@@ -16,12 +13,11 @@ data class MusicResponse(
     val artist: String,
 
     @field:Schema(description = "음악 썸네일 url", example = "www.example.com")
-    val thumbnail: String,
+    val thumbnail: String?,
 ) {
     companion object {
-        fun of(result: SearchMusicResult): MusicResponse =
-            MusicResponse(
-                id = null,
+        fun of(result: SearchMusicResult): SearchMusicResponse =
+            SearchMusicResponse(
                 title = result.title,
                 artist = result.artist,
                 thumbnail = result.thumbnail
