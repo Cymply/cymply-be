@@ -4,10 +4,10 @@ import java.time.LocalDateTime
 
 abstract class User(
     val id: Long? = null,
-    val role: Role,
     val email: String,
     val nickname: String,
-    val profile: UserProfile,
+    val role: Role,
+    val profile: UserProfile?,
     val deletedAt: LocalDateTime? = null
 ) {
     enum class Role {
@@ -18,10 +18,10 @@ abstract class User(
     fun getIdOrThrow() = id ?: throw IllegalStateException("User id is null.")
 
     fun verifyValidUser() {
-        if (!isActiveUser()) {
+        if (!isDeletedUser()) {
             throw IllegalArgumentException("Already withdraw, User: $id")
         }
     }
 
-    fun isActiveUser() = deletedAt == null
+    fun isDeletedUser() = deletedAt == null
 }

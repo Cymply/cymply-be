@@ -1,6 +1,6 @@
 package com.cymply.user.adapter.`in`.web.dto
 
-import com.cymply.user.application.service.UserSimpleInfo
+import com.cymply.user.application.service.dto.UserSimpleInfo
 import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "회원 정보 응답 DTO")

@@ -1,13 +1,15 @@
 package com.cymply.user.adapter.`in`.web.controller
 
-import com.cymply.auth.adapter.`in`.security.PrincipalDetail
 import com.cymply.common.response.ApiResponse
+import com.cymply.user.adapter.`in`.web.dto.SignupRequest
+import com.cymply.user.adapter.`in`.web.dto.SignupResponse
 import com.cymply.user.adapter.`in`.web.dto.UserResponse
 import com.cymply.user.application.port.`in`.GetUserUseCase
+import com.cymply.user.application.port.`in`.RegisterUserUseCase
 import com.cymply.user.application.port.`in`.ValidateNicknameUseCase
-import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -16,18 +18,19 @@ import org.springframework.web.bind.annotation.RestController
 class UserGetController(
     private val getUserUseCase: GetUserUseCase,
     private val validateNicknameUseCase: ValidateNicknameUseCase,
+    private val registerUserUseCase: RegisterUserUseCase,
 ) : UserApiController {
-    override fun findMyAccount(
-        @AuthenticationPrincipal principal: PrincipalDetail
+    override fun getMyAccount(
+        @AuthenticationPrincipal principal: Jwt,
     ): ApiResponse<UserResponse> {
-        val id = principal.username.toLong()
+        val id = principal.getClaimAsString("id").toLong()
         val info = getUserUseCase.getActiveUserOrElseThrow(id)
         val response = UserResponse.from(info)
         return ApiResponse(true, ApiResponse.DataWrapper(content = response), null)
     }
 
     override fun checkAvailableNickname(
-        @AuthenticationPrincipal principal: PrincipalDetail,
+        @AuthenticationPrincipal principal: Jwt,
         nickname: String
     ): ApiResponse<Boolean?> {
         val result = validateNicknameUseCase.validateNickname(nickname)
@@ -37,7 +40,16 @@ class UserGetController(
         return ApiResponse.success(content = null)
     }
 
-    override fun signupOAuth2User(principal: PrincipalDetail): ApiResponse<Unit> {
-        TODO("Not yet implemented")
+    override fun signupOAuth2User(
+        @AuthenticationPrincipal principal: Jwt,
+        @RequestBody request: SignupRequest
+    ): ApiResponse<SignupResponse?> {
+
+        val command = SignupRequest.from(principal, request)
+        val result = registerUserUseCase.registerOAuth2User(command)
+        if (result <= 0) {
+            return ApiResponse.failure(content = null, errorMessage = "회원가입에 실패하였습니다. 다시 시도해주세요.")
+        }
+        return ApiResponse.success(content = SignupResponse("accessToken", "refreshToken"))
     }
 }

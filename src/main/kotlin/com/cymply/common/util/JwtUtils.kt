@@ -18,7 +18,7 @@ class JwtUtils(
 
     companion object {
         const val IDENTITIES_KEY = "identities"
-        const val ISS_KEY = "api.cymply.com"
+        const val ISS_KEY = "http://localhost:8080"
     }
 
     @PostConstruct
@@ -47,13 +47,13 @@ class JwtUtils(
             .before(Date())
     }
 
-    fun generate(identity: Map<String, Any?>, expired: Long = 1000): String {
+    fun generate(identities: Map<String, Any?>, expired: Long = 1000): String {
         return Jwts.builder()
             .issuer(ISS_KEY)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
-            .claims(mapOf(IDENTITIES_KEY to identity))
+            .claims(identities)
             .compact()
     }
 }

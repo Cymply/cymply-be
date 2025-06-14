@@ -1,5 +1,7 @@
 package com.cymply.auth.adapter.`in`.security
 
+import com.cymply.auth.adapter.`in`.security.dto.GooglePrincipalDetail
+import com.cymply.auth.adapter.`in`.security.dto.KakaoPrincipalDetail
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
@@ -8,15 +10,20 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomOAuth2UserService(
-    private val getUserUseCase: GetUserUseCase,
+    private val getUserUseCase: GetUserUseCase
 ) : DefaultOAuth2UserService() {
-    override fun loadUser(request: OAuth2UserRequest): OAuth2User {
-        val oauth = super.loadUser(request)
+    override fun loadUser(request: OAuth2UserRequest): OAuth2User? {
+        val oauth2User = super.loadUser(request)
         val provider = request.clientRegistration.registrationId.uppercase()
-        val account = OAuth2UserAccount.from(provider, oauth)
-        getUserUseCase.getActiveUser(sub = oauth.name, provider = provider)
-            ?: return PrincipalDetail(account.getAttributes())
+        val user = getUserUseCase.getActiveUser(provider, oauth2User.name)
 
-        return PrincipalDetail(account.getAttributes())
+        val id = user?.id ?: -1L
+        val role = user?.role?.name ?: "PENDING_USER"
+
+        return when (provider) {
+            "GOOGLE" -> GooglePrincipalDetail.from(id, role, oauth2User)
+            "KAKAO" -> KakaoPrincipalDetail.from(id, role, oauth2User)
+            else -> throw IllegalArgumentException("Unsupported provider: $provider")
+        }
     }
 }

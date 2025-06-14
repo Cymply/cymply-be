@@ -4,10 +4,10 @@ import java.time.LocalDateTime
 
 class OAuth2User(
     id: Long? = null,
-    role: Role,
     email: String,
     nickname: String,
-    profile: UserProfile,
+    role: Role,
+    profile: UserProfile?,
     deletedAt: LocalDateTime? = null,
     /**
      * 소셜 플랫폼 종류
@@ -17,22 +17,14 @@ class OAuth2User(
      * 소셜 플랫폼 식별자
      */
     val sub: String
-) : User(id, role, email, nickname, profile, deletedAt) {
+) : User(id, email, nickname, role, profile, deletedAt) {
     companion object {
         fun of(
-            role: Role,
-            email: String,
-            nickname: String,
-            profile: UserProfile,
-            provider: UserProvider,
-            sub: String
+            email: String, nickname: String, role: Role,
+            profile: UserProfile, provider: UserProvider, sub: String
         ) = OAuth2User(
-            role = role,
-            email = email,
-            nickname = nickname,
-            profile = profile,
-            provider = provider,
-            sub = sub
+            email = email, nickname = nickname, role = role,
+            profile = profile, provider = provider, sub = sub
         )
     }
 }

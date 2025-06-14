@@ -13,13 +13,14 @@ class UserPersistenceAdapter(
     private val userEntityMapper: UserEntityMapper
 ) : LoadUserPort, SaveUserPort {
     override fun loadUserById(id: Long): User {
-        val userEntity = oAuth2UserJpaRepository.findById(id)
+        val userEntity = userJpaRepository.findById(id)
             .orElseThrow { IllegalArgumentException("User not found") }
         return userEntityMapper.from(userEntity)
     }
 
     override fun loadUserBySubAndProvider(sub: String, provider: UserProvider): User? {
-        val userEntity = oAuth2UserJpaRepository.findBySubAndProvider(sub, provider) ?: return null
+        val userEntity = oAuth2UserJpaRepository.findBySubAndProvider(sub, provider)
+            ?: return null
         return userEntityMapper.from(userEntity)
     }
 

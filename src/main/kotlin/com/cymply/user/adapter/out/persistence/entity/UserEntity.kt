@@ -17,13 +17,16 @@ abstract class UserEntity(
     @Enumerated(EnumType.STRING)
     val role: User.Role,
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     val email: String,
 
     @Column(unique = true)
     val nickname: String,
 
+    /**
+     * lazy loading
+     */
     @Embedded
-    val profile: UserEntityProfile
+    val profile: UserEntityProfile?
 ) : BaseTimeEntity()
 

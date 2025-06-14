@@ -14,7 +14,7 @@ spring:
     secret: ymtUSixbVy7LnEt48m59RYfqXStWF0VFyea73USt/V65vFFh9gRjuyYi7qK8e5QtY1HFkiuKvrtWNBSKoGXpxA==
   security:
     oauth2:
-      client:
+     client:
         registration:
           google: # registration id
             client-id: ${GOOGLE_CLIENT_ID}
@@ -42,16 +42,16 @@ spring:
 
 springdoc:
   swagger-ui:
-#    disable-swagger-default-url: true   #디폴트 페이지 안나오게
-#    display-request-duration: true
-#    operations-sorter: method
-#    tags-sorter: alpha
+    #    disable-swagger-default-url: true   #디폴트 페이지 안나오게
+    #    display-request-duration: true
+    #    operations-sorter: method
+    #    tags-sorter: alpha
     path: /api-ui.html
     url: /api-docs    # 👈 반드시 이거!
   api-docs:
     path: /api-docs
-#  show-actuator: true
-#  default-consumes-media-type: application/json
-#  default-produces-media-type: application/json
+  #  show-actuator: true
+  #  default-consumes-media-type: application/json
+  #  default-produces-media-type: application/json
   model-converters:
     generic-model-name-resolution-enabled: false
