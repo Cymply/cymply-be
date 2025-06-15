@@ -5,6 +5,7 @@ import com.cymply.common.util.JwtUtils
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -13,15 +14,27 @@ import org.springframework.stereotype.Component
 
 @Component
 class OAuth2SuccessHandler(
-    val jwtUtils: JwtUtils
+    val jwtUtils: JwtUtils,
+
+    @Value("\${spring.jwt.keys.access}")
+    private val accessTokenKey: String,
+
+    @Value("\${spring.jwt.keys.refresh")
+    private val refreshTokenKey: String,
+
+    @Value("\${spring.jwt.expires.access}")
+    private val accessTokenExpires: Long,
+
+    @Value("\${spring.jwt.expires.refresh}")
+    private val refreshTokenExpires: Long,
+
+    @Value("\${spring.jwt.expires.temporal}")
+    private val temporalTokenExpires: Long,
+
+    @Value("\${spring.jwt.cookie.max-age}")
+    private val cookieMaxAge: Int,
+
 ) : SimpleUrlAuthenticationSuccessHandler() {
-    companion object {
-        const val ACCESS_TOKEN_KEY = "AccessToken"
-        const val REFRESH_TOKEN_KEY = "RefreshToken"
-        const val ACCESS_TOKEN_EXPIRES = (60 * 60 * 1000).toLong()  // 1 hour
-        const val REFRESH_TOKEN_EXPIRES = (7 * 24 * 60 * 60 * 1000).toLong()  // 7 days
-        const val TEMPORAL_TOKEN_EXPIRES = (10 * 60 * 1000).toLong()  // 10 min
-    }
 
     override fun onAuthenticationSuccess(
         request: HttpServletRequest, response: HttpServletResponse, authentication: Authentication
@@ -29,16 +42,16 @@ class OAuth2SuccessHandler(
         val principal = authentication.principal as PrincipalDetail
 
         if (!principal.authorities.contains(SimpleGrantedAuthority("ROLE_USER"))) {
-            val at = jwtUtils.generate(principal.attributes, TEMPORAL_TOKEN_EXPIRES)
-            setCookie(response, ACCESS_TOKEN_KEY, at)
+            val at = jwtUtils.generate(principal.attributes, temporalTokenExpires)
+            setCookie(response, accessTokenKey, at)
             response.status = HttpStatus.OK.value()
             response.sendRedirect("http://localhost:3000/signup")
         } else {
-            val at = jwtUtils.generate(principal.attributes, ACCESS_TOKEN_EXPIRES)
-            val rt = jwtUtils.generate(principal.attributes, REFRESH_TOKEN_EXPIRES)
+            val at = jwtUtils.generate(principal.attributes, accessTokenExpires)
+            val rt = jwtUtils.generate(principal.attributes, refreshTokenExpires)
 
-            setCookie(response, ACCESS_TOKEN_KEY, at)
-            setCookie(response, REFRESH_TOKEN_KEY, rt)
+            setCookie(response, accessTokenKey, at)
+            setCookie(response, refreshTokenKey, rt)
             response.status = HttpStatus.OK.value()
             response.sendRedirect("http://localhost:3000/")
         }
@@ -48,7 +61,7 @@ class OAuth2SuccessHandler(
         val cookie = Cookie(key, value)
         cookie.path = "/"
         cookie.isHttpOnly = true
-        cookie.maxAge = 60
+        cookie.maxAge = cookieMaxAge
         response.addCookie(cookie)
     }
 }

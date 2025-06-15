@@ -68,6 +68,7 @@ jobs:
             EOF
             
             sudo docker run -d \
+              -e SPRING_PROFILES_ACTIVE=dev \
               --env-file /home/ubuntu/cymply.env \
               --name cymply-be \
               -p 8080:8080 \
