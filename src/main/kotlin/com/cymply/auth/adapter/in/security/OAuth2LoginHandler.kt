@@ -1,54 +1,51 @@
-package com.cymply.auth.config
+package com.cymply.auth.adapter.`in`.security
 
-import com.cymply.auth.adapter.`in`.security.dto.PrincipalDetail
-import com.cymply.common.util.JwtUtils
+import com.cymply.auth.application.port.`in`.OAuth2LoginUseCase
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken
+import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler
 import org.springframework.stereotype.Component
 
 @Component
 class OAuth2LoginSuccessHandler(
-    val jwtUtils: JwtUtils
+    private val oauth2LoginUseCase: OAuth2LoginUseCase
 ) : SimpleUrlAuthenticationSuccessHandler() {
+
     companion object {
         const val ACCESS_TOKEN_KEY = "AccessToken"
         const val REFRESH_TOKEN_KEY = "RefreshToken"
-        const val ACCESS_TOKEN_EXPIRES = 1800_000.toLong()  // 30 min
-        const val REFRESH_TOKEN_EXPIRES = 604_800_000.toLong()  // 7 days
-        const val TEMPORAL_TOKEN_EXPIRES = 900_000.toLong()  // 15 min
     }
 
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authentication: Authentication
+        authentication: Authentication,
     ) {
-        val principal = authentication.principal as PrincipalDetail
+        val oAuth2AuthenticationToken = authentication as OAuth2AuthenticationToken
+        val principal = oAuth2AuthenticationToken.principal as OAuth2User
+        val registration = oAuth2AuthenticationToken.authorizedClientRegistrationId
 
-        if (!principal.authorities.contains(SimpleGrantedAuthority("USER"))) {
-            val accessToken = jwtUtils.generate(principal.attributes, REFRESH_TOKEN_EXPIRES)
-            setCookie(response, ACCESS_TOKEN_KEY, accessToken)
-            response.status = HttpStatus.OK.value()
-            response.sendRedirect("http://localhost:3000/signup")
-        } else {
-            /**
-             * TODO
-             * Refresh Token 저장
-             */
-            val accessToken = jwtUtils.generate(principal.attributes, ACCESS_TOKEN_EXPIRES)
-            val refreshToken = jwtUtils.generate(principal.attributes, REFRESH_TOKEN_EXPIRES)
-            setCookie(response, ACCESS_TOKEN_KEY, accessToken)
-            setCookie(response, REFRESH_TOKEN_KEY, refreshToken)
-            response.status = HttpStatus.OK.value()
-            response.sendRedirect("http://localhost:3000/")
+        val oAuth2LoginRequest = OAuth2LoginRequest(principal.attributes, registration)
+        val oAuth2LoginCommand = oAuth2LoginRequest.toOAuth2LoginCommand()
+        val result = oauth2LoginUseCase.login(oAuth2LoginCommand)
+
+        setCookie(response, ACCESS_TOKEN_KEY, result.accessToken)
+        setCookie(response, REFRESH_TOKEN_KEY, result.refreshToken)
+        response.status = HttpStatus.OK.value()
+
+        val redirectUri = when (result.authorities.firstOrNull()) {
+            "PENDING_USER" -> "http://localhost:3000/signup"
+            "USER" -> "http://localhost:3000/"
+            else -> "http://localhost:3000/unauthorized"
         }
+        response.sendRedirect(redirectUri)
     }
 
     private fun setCookie(response: HttpServletResponse, key: String, value: String) {

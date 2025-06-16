@@ -1,6 +1,5 @@
 package com.cymply.user.adapter.`in`.web.controller
 
-import com.cymply.auth.adapter.`in`.security.dto.PrincipalDetail
 import com.cymply.user.adapter.`in`.web.dto.SignupRequest
 import com.cymply.user.adapter.`in`.web.dto.SignupResponse
 import com.cymply.user.adapter.`in`.web.dto.UserResponse

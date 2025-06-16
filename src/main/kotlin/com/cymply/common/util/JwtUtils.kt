@@ -17,7 +17,6 @@ class JwtUtils(
     private lateinit var key: SecretKey
 
     companion object {
-        const val IDENTITIES_KEY = "identities"
         const val ISS_KEY = "http://localhost:8080"
     }
 
@@ -27,16 +26,6 @@ class JwtUtils(
             secret.toByteArray(StandardCharsets.UTF_8),
             Jwts.SIG.HS256.key().build().algorithm
         )
-    }
-
-    fun getIdentities(token: String): Map<String, Any?> {
-        return Jwts
-            .parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .payload
-            .get(IDENTITIES_KEY, Map::class.java) as Map<String, Any?>
     }
 
     fun isExpired(token: String): Boolean {

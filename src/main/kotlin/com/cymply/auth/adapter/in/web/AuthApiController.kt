@@ -1,4 +1,4 @@
-package com.cymply.auth.adapter.`in`
+package com.cymply.auth.adapter.`in`.web
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
@@ -33,14 +35,26 @@ interface AuthApiController {
         @PathVariable provider: String
     )
 
-    @Operation(summary = "Access Token 재발급", description = "Access Token 재발급을 실행합니다.")
+    @Operation(summary = "회원가입 후 Access Token 재발급", description = "가입 완료 후 정상적인 Access Token 발급을 실행합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200")
+        ]
+    )
+    @GetMapping("/api/v1/users/signup/oauth2/success")
+    fun oAuth2SignupSuccess(
+        @AuthenticationPrincipal jwt: Jwt
+    ): com.cymply.common.response.ApiResponse<TokenResponse>
+
+    @Operation(summary = "Access Token 재발급", description = "만료된 Access Token 재발급을 실행합니다.")
     @ApiResponses(
         value = [
             ApiResponse(responseCode = "200", description = "성공")
         ]
     )
-    @GetMapping("/auth/refresh")
-    fun issueAccessToken(
+    @GetMapping("/api/v1/auth/refresh")
+    fun refreshAccessToken(
+        @AuthenticationPrincipal jwt: Jwt,
         @RequestBody refreshToken: String
-    )
+    ): com.cymply.common.response.ApiResponse<TokenResponse>
 }
