@@ -1,6 +1,11 @@
 spring:
   application:
     name: cymply
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
   profiles:
     active: local
   jpa:
@@ -14,7 +19,7 @@ spring:
     secret: ymtUSixbVy7LnEt48m59RYfqXStWF0VFyea73USt/V65vFFh9gRjuyYi7qK8e5QtY1HFkiuKvrtWNBSKoGXpxA==
   security:
     oauth2:
-     client:
+      client:
         registration:
           google: # registration id
             client-id: ${GOOGLE_CLIENT_ID}

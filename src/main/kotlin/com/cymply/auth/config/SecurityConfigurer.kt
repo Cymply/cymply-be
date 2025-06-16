@@ -3,17 +3,19 @@ package com.cymply.auth.config
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
+@EnableWebSecurity
 class SecurityConfigurer(
     private val oauth2LoginConfigurer: (HttpSecurity) -> Unit,
     private val oauth2ResourceServerConfigurer: (HttpSecurity) -> Unit
 ) {
     companion object {
         val WHITELIST: Array<String> = arrayOf(
-            "/", "/oauth2/**", "/login/**", "/api/public/**",
-            "/swagger-ui/**", "/api-docs/**", "/api/v1/**"
+            "/", "/h2-console/**", "/oauth2/**", "/login/**", "/public/**",
+            "/api/public/**", "/swagger-ui/**", "/api-docs/**", "/api/v1/**"
         )
     }
 
@@ -24,11 +26,13 @@ class SecurityConfigurer(
          */
         http
             .csrf { it.disable() }
+            .headers { it.frameOptions { frame -> frame.sameOrigin() } }
             .cors { CorsConfig().corsConfigurationSource() }
             .formLogin { it.disable() }
 
-        http.authorizeHttpRequests {
-            it.requestMatchers(*WHITELIST).permitAll()
+        http.authorizeHttpRequests { authz ->
+            authz
+                .requestMatchers(*WHITELIST).permitAll()
                 .anyRequest().authenticated()
         }
 
@@ -37,5 +41,4 @@ class SecurityConfigurer(
 
         return http.build()
     }
-
 }
