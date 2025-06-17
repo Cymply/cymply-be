@@ -2,10 +2,10 @@ package com.cymply.auth.application.service
 
 import com.cymply.auth.application.port.`in`.OAuth2LoginCommand
 import com.cymply.auth.application.port.`in`.OAuth2LoginUseCase
-import com.cymply.auth.application.port.out.SaveRefreshTokenPort
+import com.cymply.auth.application.port.out.SaveTokenPort
+import com.cymply.auth.domain.AuthenticatedPrincipal
 import com.cymply.common.util.JwtUtils
 import com.cymply.user.application.port.`in`.GetUserUseCase
-import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Service
 
 /**
@@ -15,46 +15,24 @@ import org.springframework.stereotype.Service
  */
 @Service
 class OAuth2LoginService(
-    private val jwtUtils: JwtUtils,
     private val getUserUseCase: GetUserUseCase,
-    private val saveRefreshTokenPort: SaveRefreshTokenPort
+    private val jwtUtils: JwtUtils,
+    private val saveTokenPort: SaveTokenPort
 ) : OAuth2LoginUseCase {
-    companion object {
-        const val ACCESS_TOKEN_EXPIRES = 1800_000.toLong()  // 30 min
-        const val REFRESH_TOKEN_EXPIRES = 604_800_000.toLong()  // 7 days
-        const val TEMPORAL_TOKEN_EXPIRES = 900_000.toLong()  // 15 min
-    }
-
-    override fun login(command: OAuth2LoginCommand): OAuth2LoginResult {
+    override fun oAuth2Login(command: OAuth2LoginCommand): AuthenticationToken {
         val user = getUserUseCase.getActiveUser(command.provider, command.sub)
 
         if (user == null) {
-            val claims = command.getAttributes() + mapOf("role" to "PENDING_USER")
-            val accessToken = jwtUtils.generate(claims, TEMPORAL_TOKEN_EXPIRES)
-            return OAuth2LoginResult(
-                accessToken = accessToken,
-                refreshToken = accessToken,
-                authorities = listOf("PENDING_USER"),
-                expiresIn = TEMPORAL_TOKEN_EXPIRES
-            )
+            val claims = command.getAttributes() + mapOf("scope" to "user:signup")
+            val accessToken = jwtUtils.generate(claims, TokenExpirePolicy.TEMPORAL)
+            return AuthenticationToken(accessToken, TokenExpirePolicy.TEMPORAL, accessToken, TokenExpirePolicy.TEMPORAL)
         }
 
-        val claims = mapOf(
-            "id" to user.id,
-            "email" to user.email,
-            "nickname" to user.nickname,
-            "role" to user.role.name
-        )
+        val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
+        val accessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
+        val refreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
+        saveTokenPort.saveRefreshToken(refreshToken)
 
-        val accessToken = jwtUtils.generate(claims, ACCESS_TOKEN_EXPIRES)
-        val refreshToken = jwtUtils.generate(claims, REFRESH_TOKEN_EXPIRES)
-        saveRefreshTokenPort.saveRefreshToken(refreshToken)
-
-        return OAuth2LoginResult(
-            accessToken = accessToken,
-            refreshToken = refreshToken,
-            authorities = listOf(user.role.name),
-            expiresIn = ACCESS_TOKEN_EXPIRES
-        )
+        return AuthenticationToken(accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH)
     }
 }

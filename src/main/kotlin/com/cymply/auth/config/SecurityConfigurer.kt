@@ -15,7 +15,7 @@ class SecurityConfigurer(
     companion object {
         val WHITELIST: Array<String> = arrayOf(
             "/", "/h2-console/**", "/oauth2/**", "/login/**", "/public/**",
-            "/api/public/**", "/swagger-ui/**", "/api-docs/**", "/api/v1/**"
+            "/swagger-ui/**", "/api-docs/**",
         )
     }
 
@@ -24,15 +24,17 @@ class SecurityConfigurer(
         /**
          * 보안 및 인증 방식 설정
          */
-        http
-            .csrf { it.disable() }
+        http.csrf { it.disable() }
             .headers { it.frameOptions { frame -> frame.sameOrigin() } }
             .cors { CorsConfig().corsConfigurationSource() }
             .formLogin { it.disable() }
 
         http.authorizeHttpRequests { authz ->
-            authz
-                .requestMatchers(*WHITELIST).permitAll()
+            authz.requestMatchers(*WHITELIST).permitAll()   // 전체 허용
+                .requestMatchers("/api/v1/users/signup/**", "/api/v1/users/check/nickname/**")
+                .hasAuthority("SCOPE_user:signup")  // 비회원 권한
+                .requestMatchers("/api/v1/users/**").hasAuthority("SCOPE_user")
+                .requestMatchers("/api/v1/music/**").hasAuthority("SCOPE_music")
                 .anyRequest().authenticated()
         }
 

@@ -23,5 +23,5 @@ abstract class User(
         }
     }
 
-    fun isDeletedUser() = deletedAt == null
+    fun isDeletedUser() = deletedAt != null
 }

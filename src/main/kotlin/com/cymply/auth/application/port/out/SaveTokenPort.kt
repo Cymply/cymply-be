@@ -1,5 +1,5 @@
 package com.cymply.auth.application.port.out
 
-interface SaveRefreshTokenPort {
+interface SaveTokenPort {
     fun saveRefreshToken(token: String)
 }

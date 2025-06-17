@@ -1,4 +1,4 @@
-package com.cymply.auth.adapter.`in`.security
+package com.cymply.auth.adapter.`in`.dto
 
 import com.cymply.auth.application.port.`in`.GoogleOAuth2LoginCommand
 import com.cymply.auth.application.port.`in`.KakaoOAuth2LoginCommand
@@ -14,13 +14,13 @@ data class OAuth2LoginRequest(
 ) {
     fun toOAuth2LoginCommand(): OAuth2LoginCommand {
         return when (registration) {
-            "google" -> toGoogleCommand()
-            "kakao" -> toKakaoCommand()
+            "google" -> toGoogleLoginCommand()
+            "kakao" -> toKakaoLoginCommand()
             else -> throw IllegalArgumentException("Unrecognized registration: $registration")
         }
     }
 
-    private fun toGoogleCommand(): OAuth2LoginCommand {
+    private fun toGoogleLoginCommand(): OAuth2LoginCommand {
         return GoogleOAuth2LoginCommand(
             sub = attributes["sub"] as String,
             email = attributes["email"] as String,
@@ -29,7 +29,7 @@ data class OAuth2LoginRequest(
         )
     }
 
-    private fun toKakaoCommand(): OAuth2LoginCommand {
+    private fun toKakaoLoginCommand(): OAuth2LoginCommand {
         val sub = (attributes["id"] as Number).toString()
         val account = attributes["kakao_account"] as Map<*, *>
         return KakaoOAuth2LoginCommand(

@@ -1,4 +1,4 @@
-package com.cymply.user.application.service
+package com.cymply.user.application.port.`in`
 
 import com.cymply.common.model.Gender
 import java.time.LocalDate

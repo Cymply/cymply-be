@@ -36,7 +36,7 @@ class JwtUtils(
             .before(Date())
     }
 
-    fun generate(identities: Map<String, Any?>, expired: Long = 1000): String {
+    fun generate(identities: Map<String, Any?>, expired: Long): String {
         return Jwts.builder()
             .issuer(ISS_KEY)
             .issuedAt(Date(System.currentTimeMillis()))
@@ -45,4 +45,5 @@ class JwtUtils(
             .claims(identities)
             .compact()
     }
+
 }

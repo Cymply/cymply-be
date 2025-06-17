@@ -2,7 +2,6 @@ package com.cymply.user.application.service
 
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import com.cymply.user.application.port.out.LoadUserPort
-import com.cymply.user.application.service.dto.UserSimpleInfo
 import com.cymply.user.domain.UserProvider
 import org.springframework.stereotype.Service
 

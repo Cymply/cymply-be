@@ -1,5 +1,6 @@
 package com.cymply.auth.adapter.`in`.security
 
+import com.cymply.auth.adapter.`in`.dto.OAuth2LoginRequest
 import com.cymply.auth.application.port.`in`.OAuth2LoginUseCase
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
@@ -34,18 +35,18 @@ class OAuth2LoginSuccessHandler(
 
         val oAuth2LoginRequest = OAuth2LoginRequest(principal.attributes, registration)
         val oAuth2LoginCommand = oAuth2LoginRequest.toOAuth2LoginCommand()
-        val result = oauth2LoginUseCase.login(oAuth2LoginCommand)
+        val result = oauth2LoginUseCase.oAuth2Login(oAuth2LoginCommand)
 
         setCookie(response, ACCESS_TOKEN_KEY, result.accessToken)
         setCookie(response, REFRESH_TOKEN_KEY, result.refreshToken)
         response.status = HttpStatus.OK.value()
 
-        val redirectUri = when (result.authorities.firstOrNull()) {
-            "PENDING_USER" -> "http://localhost:3000/signup"
-            "USER" -> "http://localhost:3000/"
-            else -> "http://localhost:3000/unauthorized"
+        val scopes = result.scope?.split(" ").orEmpty()
+        val redirect = when (scopes.firstOrNull()) {
+            "signup" -> "http://localhost:3000/signup"
+            else -> "http://localhost:3000/"
         }
-        response.sendRedirect(redirectUri)
+        response.sendRedirect(redirect)
     }
 
     private fun setCookie(response: HttpServletResponse, key: String, value: String) {

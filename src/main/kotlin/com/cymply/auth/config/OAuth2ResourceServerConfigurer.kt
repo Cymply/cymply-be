@@ -34,15 +34,13 @@ class OAuth2ResourceServerConfigurer {
     @Bean
     fun jwtAuthenticationConverter(): JwtAuthenticationConverter {
         val grantedAuthoritiesConverter = JwtGrantedAuthoritiesConverter()
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("role")
-        grantedAuthoritiesConverter.setAuthorityPrefix("")
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("scope")
 
         /**
          * JwtAuthenticationConverter
          * Jwt를 부여된 권한 Collection으로 변환
          */
         val authenticationConverter = JwtAuthenticationConverter()
-//        authenticationConverter.setPrincipalClaimName("id")
         authenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter)
         return authenticationConverter
     }

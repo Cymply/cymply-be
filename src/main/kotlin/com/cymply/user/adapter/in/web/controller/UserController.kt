@@ -21,7 +21,6 @@ class UserGetController(
     private val validateNicknameUseCase: ValidateNicknameUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
 ) : UserApiController {
-    @RolesAllowed("USER")
     override fun getMyAccount(
         @AuthenticationPrincipal principal: Jwt,
     ): ApiResponse<UserResponse> {
@@ -42,7 +41,6 @@ class UserGetController(
         return ApiResponse.success(content = null)
     }
 
-    @RolesAllowed("PENDING_USER")
     override fun signupOAuth2User(
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody request: SignupRequest
