@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class RefreshTokenService(
     private val jwtUtils: JwtUtils,
+    private val expirePolicy: TokenExpirePolicy,
     private val getUserUseCase: GetUserUseCase,
     private val loadRefreshTokenPort: LoadRefreshTokenPort,
     private val saveTokenPort: SaveRefreshTokenPort
@@ -32,13 +33,13 @@ class RefreshTokenService(
         val user = getUserUseCase.getActiveUserOrElseThrow(claimId)
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
 
-        val newAccessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
-        val newRefreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
-        saveTokenPort.saveRefreshToken(jwtUtils.getId(newRefreshToken), newRefreshToken, TokenExpirePolicy.REFRESH)
+        val newAccessToken = jwtUtils.generate(principal.getAttributes(), expirePolicy.access)
+        val newRefreshToken = jwtUtils.generate(principal.getAttributes(), expirePolicy.refresh)
+        saveTokenPort.saveRefreshToken(jwtUtils.getId(newRefreshToken), newRefreshToken, expirePolicy.refresh)
 
         return AuthenticationToken(
-            newAccessToken, TokenExpirePolicy.ACCESS,
-            newRefreshToken, TokenExpirePolicy.REFRESH
+            newAccessToken, expirePolicy.access,
+            newRefreshToken, expirePolicy.refresh
         )
     }
 }

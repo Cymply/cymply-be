@@ -19,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec
 @Configuration
 class OAuth2ResourceServerConfigurer {
 
-    @Value("\${spring.jwt.secret}")
+    @Value("\${spring.security.jwt.secret}")
     private lateinit var key: String
 
     @Bean

@@ -5,6 +5,7 @@ import com.cymply.auth.application.port.`in`.OAuth2LoginUseCase
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -16,7 +17,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class OAuth2LoginSuccessHandler(
+    @Value("\${spring.app.client}")
+    private val client: String,
     private val oauth2LoginUseCase: OAuth2LoginUseCase
+
 ) : SimpleUrlAuthenticationSuccessHandler() {
 
     companion object {
@@ -42,8 +46,8 @@ class OAuth2LoginSuccessHandler(
         response.status = HttpStatus.OK.value()
 
         val redirect = when (result.scopes?.firstOrNull()) {
-            "user:signup" -> "http://localhost:3000/signup"
-            else -> "http://localhost:3000/"
+            "user:signup" -> "${client}/signup"
+            else -> "${client}/"
         }
         response.sendRedirect(redirect)
     }

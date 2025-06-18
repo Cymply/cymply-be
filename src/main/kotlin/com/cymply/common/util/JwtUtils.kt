@@ -11,14 +11,12 @@ import javax.crypto.spec.SecretKeySpec
 
 @Component
 class JwtUtils(
-    @Value("\${spring.jwt.secret}")
-    private val secret: String
+    @Value("\${spring.security.jwt.secret}")
+    private val secret: String,
+    @Value("\${spring.app.host}")
+    private val issuer: String,
 ) {
     private lateinit var key: SecretKey
-
-    companion object {
-        const val ISS_KEY = "http://localhost:8080"
-    }
 
     @PostConstruct
     fun init() {
@@ -52,7 +50,7 @@ class JwtUtils(
 
     fun generate(identities: Map<String, Any?>, expired: Long): String {
         return Jwts.builder()
-            .issuer(ISS_KEY)
+            .issuer(issuer)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)

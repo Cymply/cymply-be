@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 @Service
 class ReissueTokenService(
     private val jwtUtils: JwtUtils,
+    private val expirePolicy: TokenExpirePolicy,
     private val getUserUseCase: GetUserUseCase,
     private val saveTokenPort: SaveRefreshTokenPort
 ) : ReissueTokenUseCase {
@@ -22,12 +23,12 @@ class ReissueTokenService(
             ?: throw IllegalArgumentException("Not found user: ${command.sub}")
 
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
-        val accessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
-        val refreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
-        saveTokenPort.saveRefreshToken(jwtUtils.getId(refreshToken), refreshToken, TokenExpirePolicy.REFRESH)
+        val accessToken = jwtUtils.generate(principal.getAttributes(), expirePolicy.access)
+        val refreshToken = jwtUtils.generate(principal.getAttributes(), expirePolicy.refresh)
+        saveTokenPort.saveRefreshToken(jwtUtils.getId(refreshToken), refreshToken, expirePolicy.refresh)
 
         return AuthenticationToken(
-            accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH, scopes = principal.scopes
+            accessToken, expirePolicy.access, refreshToken, expirePolicy.refresh, scopes = principal.scopes
         )
     }
 }
