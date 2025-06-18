@@ -6,5 +6,5 @@ data class AuthenticationToken(
     val refreshToken: String,
     val refreshToKenExpiresIn: Long,
     val tokenType: String? = "Bearer",
-    val scope: String? = null
+    val scopes: List<String>? = mutableListOf()
 )

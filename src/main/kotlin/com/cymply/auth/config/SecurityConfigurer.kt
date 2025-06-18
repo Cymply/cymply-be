@@ -15,7 +15,7 @@ class SecurityConfigurer(
     companion object {
         val WHITELIST: Array<String> = arrayOf(
             "/", "/h2-console/**", "/oauth2/**", "/login/**", "/public/**",
-            "/swagger-ui/**", "/api-docs/**",
+            "/swagger-ui/**", "/api-docs/**", "/api/v1/auth/**"
         )
     }
 
@@ -31,10 +31,12 @@ class SecurityConfigurer(
 
         http.authorizeHttpRequests { authz ->
             authz.requestMatchers(*WHITELIST).permitAll()   // 전체 허용
-                .requestMatchers("/api/v1/users/signup/**", "/api/v1/users/check/nickname/**")
-                .hasAuthority("SCOPE_user:signup")  // 비회원 권한
+                .requestMatchers(   // 비회원 권한
+                    "/api/v1/users/signup/**",
+                    "/api/v1/users/check/nickname/**"
+                ).hasAuthority("SCOPE_user:signup")
                 .requestMatchers("/api/v1/users/**").hasAuthority("SCOPE_user")
-                .requestMatchers("/api/v1/music/**").hasAuthority("SCOPE_music")
+                .requestMatchers("/api/v1/playlists/**").hasAuthority("SCOPE_playlist")
                 .anyRequest().authenticated()
         }
 

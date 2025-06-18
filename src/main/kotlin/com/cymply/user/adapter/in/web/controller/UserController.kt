@@ -7,7 +7,6 @@ import com.cymply.user.adapter.`in`.web.dto.UserResponse
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import com.cymply.user.application.port.`in`.RegisterUserUseCase
 import com.cymply.user.application.port.`in`.ValidateNicknameUseCase
-import jakarta.annotation.security.RolesAllowed
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.RequestBody

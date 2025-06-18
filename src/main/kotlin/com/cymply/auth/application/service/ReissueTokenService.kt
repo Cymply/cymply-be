@@ -2,7 +2,7 @@ package com.cymply.auth.application.service
 
 import com.cymply.auth.application.port.`in`.ReissueTokenCommand
 import com.cymply.auth.application.port.`in`.ReissueTokenUseCase
-import com.cymply.auth.application.port.out.SaveTokenPort
+import com.cymply.auth.application.port.out.SaveRefreshTokenPort
 import com.cymply.auth.domain.AuthenticatedPrincipal
 import com.cymply.common.util.JwtUtils
 import com.cymply.user.application.port.`in`.GetUserUseCase
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class ReissueTokenService(
     private val jwtUtils: JwtUtils,
     private val getUserUseCase: GetUserUseCase,
-    private val saveTokenPort: SaveTokenPort
+    private val saveTokenPort: SaveRefreshTokenPort
 ) : ReissueTokenUseCase {
     override fun reissueToken(command: ReissueTokenCommand): AuthenticationToken {
         val user = getUserUseCase.getActiveUser(sub = command.sub, provider = command.provider)
@@ -25,7 +25,9 @@ class ReissueTokenService(
         val accessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
         val refreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
 
-        saveTokenPort.saveRefreshToken(refreshToken)
-        return AuthenticationToken(accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH)
+        saveTokenPort.saveRefreshToken(refreshToken, TokenExpirePolicy.REFRESH)
+        return AuthenticationToken(
+            accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH, scopes = principal.scopes
+        )
     }
 }

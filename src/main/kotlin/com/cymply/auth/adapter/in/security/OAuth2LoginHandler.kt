@@ -41,9 +41,8 @@ class OAuth2LoginSuccessHandler(
         setCookie(response, REFRESH_TOKEN_KEY, result.refreshToken)
         response.status = HttpStatus.OK.value()
 
-        val scopes = result.scope?.split(" ").orEmpty()
-        val redirect = when (scopes.firstOrNull()) {
-            "signup" -> "http://localhost:3000/signup"
+        val redirect = when (result.scopes?.firstOrNull()) {
+            "user:signup" -> "http://localhost:3000/signup"
             else -> "http://localhost:3000/"
         }
         response.sendRedirect(redirect)

@@ -36,12 +36,26 @@ class JwtUtils(
             .before(Date())
     }
 
+    fun getId(token: String): String {
+        return Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(token)
+            .payload
+            .id
+    }
+
+    fun extractUserId(token: String): Long {
+        return Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(token)
+            .payload["id"] as Long
+    }
+
     fun generate(identities: Map<String, Any?>, expired: Long): String {
         return Jwts.builder()
             .issuer(ISS_KEY)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
+            .id(UUID.randomUUID().toString())
             .claims(identities)
             .compact()
     }
