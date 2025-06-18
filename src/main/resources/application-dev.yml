@@ -1,9 +1,8 @@
 spring:
-  application:
-    name: cymply
+  config:
+    activate:
+      on-profile: dev
 
-  profiles:
-    active: local
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,8 +10,24 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   jwt:
     secret: ymtUSixbVy7LnEt48m59RYfqXStWF0VFyea73USt/V65vFFh9gRjuyYi7qK8e5QtY1HFkiuKvrtWNBSKoGXpxA==
+    keys:
+      identities: identities
+      iss: api.cymply.com
+      access: AccessToken
+      refresh: RefreshToken
+    expires:
+      access: 360000 # 60 * 60 * 1000 => 1 hour
+      refresh: 604800000 # 7 * 24 * 60 * 60 * 1000 => 7 days
+      temporal: 6000000 # 100 * 60 * 1000 => 100 minutes
+    redirect:
+      user: http://localhost:3000/signup
+      admin: http://localhost:3000
+    cookie:
+      max-age: 60
+
   security:
     oauth2:
       client:
@@ -41,18 +56,5 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-springdoc:
-  swagger-ui:
-    #    disable-swagger-default-url: true   #디폴트 페이지 안나오게
-    #    display-request-duration: true
-    #    operations-sorter: method
-    #    tags-sorter: alpha
-    path: /api-ui.html
-    url: /api-docs
-  api-docs:
-    path: /api-docs
-  #  show-actuator: true
-  #  default-consumes-media-type: application/json
-  #  default-produces-media-type: application/json
-  model-converters:
-    generic-model-name-resolution-enabled: false
+api-key:
+  last-fm: 158efb6c0fd97dc64e730a293fc73a07

@@ -64,9 +64,11 @@ jobs:
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
+            BASE_URL=${{ secrets.BASE_URL }}
             EOF
             
             sudo docker run -d \
+              -e SPRING_PROFILES_ACTIVE=dev \
               --env-file /home/ubuntu/cymply.env \
               --name cymply-be \
               -p 8080:8080 \

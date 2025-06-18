@@ -1,6 +1,6 @@
 package com.cymply.letter.adapter.`in`.web.dto
 
-import com.cymply.music.adapter.`in`.web.dto.MusicResponse
+import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -19,6 +19,6 @@ data class LetterResponse(
     @field:Schema(description = "전송 시각 (ISO 8601 형식)", example = "2025-06-01T12:00:00")
     val sentAt: LocalDateTime,
 
-    @field:Schema(implementation = MusicResponse::class)
-    val music: MusicResponse
+    @field:Schema(implementation = SearchMusicResponse::class)
+    val music: SearchMusicResponse
 )
