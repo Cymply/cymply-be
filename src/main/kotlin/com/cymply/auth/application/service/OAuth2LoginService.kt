@@ -21,7 +21,7 @@ class OAuth2LoginService(
 ) : OAuth2LoginUseCase {
     override fun oAuth2Login(command: OAuth2LoginCommand): AuthenticationToken {
         val user = getUserUseCase.getActiveUser(command.provider, command.sub)
-
+        // 비회원인 경우
         if (user == null) {
             val scope = "user:signup"
             val claims = command.getAttributes() + mapOf("scope" to scope)
@@ -32,10 +32,11 @@ class OAuth2LoginService(
             )
         }
 
+        // 회원인 경우
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
         val accessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
         val refreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
-        saveTokenPort.saveRefreshToken(refreshToken, TokenExpirePolicy.REFRESH)
+        saveTokenPort.saveRefreshToken(jwtUtils.getId(refreshToken), refreshToken, TokenExpirePolicy.REFRESH)
 
         return AuthenticationToken(
             accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH, scopes = principal.scopes

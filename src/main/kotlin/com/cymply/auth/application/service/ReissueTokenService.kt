@@ -18,14 +18,14 @@ class ReissueTokenService(
     private val saveTokenPort: SaveRefreshTokenPort
 ) : ReissueTokenUseCase {
     override fun reissueToken(command: ReissueTokenCommand): AuthenticationToken {
-        val user = getUserUseCase.getActiveUser(sub = command.sub, provider = command.provider)
-            ?: throw IllegalArgumentException("The user ${command.sub} does not exist.")
+        val user = getUserUseCase.getActiveUser(command.provider, command.sub)
+            ?: throw IllegalArgumentException("Not found user: ${command.sub}")
 
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
         val accessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
         val refreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
+        saveTokenPort.saveRefreshToken(jwtUtils.getId(refreshToken), refreshToken, TokenExpirePolicy.REFRESH)
 
-        saveTokenPort.saveRefreshToken(refreshToken, TokenExpirePolicy.REFRESH)
         return AuthenticationToken(
             accessToken, TokenExpirePolicy.ACCESS, refreshToken, TokenExpirePolicy.REFRESH, scopes = principal.scopes
         )

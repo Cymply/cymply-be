@@ -19,16 +19,22 @@ class RefreshTokenService(
     private val saveTokenPort: SaveRefreshTokenPort
 ) : RefreshTokenUseCase {
     override fun refreshToken(refreshToken: String): AuthenticationToken {
-        val loadedRefreshToken = loadRefreshTokenPort.loadRefreshToken(refreshToken)
-            ?: throw IllegalArgumentException("Not found RefreshToken")
+        val id = jwtUtils.getId(refreshToken)
 
-        val userId = jwtUtils.extractUserId(loadedRefreshToken)
-        val user = getUserUseCase.getActiveUserOrElseThrow(userId)
+        val savedRefreshToken = loadRefreshTokenPort.loadRefreshToken(id)
+            ?: throw IllegalArgumentException("Invalid refresh token")
+
+        if (refreshToken != savedRefreshToken) {
+            throw IllegalArgumentException("Invalid refresh token")
+        }
+
+        val claimId = jwtUtils.extractId(refreshToken)
+        val user = getUserUseCase.getActiveUserOrElseThrow(claimId)
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
 
         val newAccessToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.ACCESS)
         val newRefreshToken = jwtUtils.generate(principal.getAttributes(), TokenExpirePolicy.REFRESH)
-        saveTokenPort.saveRefreshToken(newRefreshToken, TokenExpirePolicy.REFRESH)
+        saveTokenPort.saveRefreshToken(jwtUtils.getId(newRefreshToken), newRefreshToken, TokenExpirePolicy.REFRESH)
 
         return AuthenticationToken(
             newAccessToken, TokenExpirePolicy.ACCESS,

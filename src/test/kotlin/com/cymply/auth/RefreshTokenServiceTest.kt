@@ -10,7 +10,6 @@ import com.cymply.user.application.service.UserSimpleInfo
 import com.cymply.user.domain.User
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
@@ -34,11 +33,11 @@ class RefreshTokenServiceTest {
         val principal = AuthenticatedPrincipal.of(user.id, user.email, user.nickname, user.role.name)
 
         every { loadRefreshTokenPort.loadRefreshToken(refreshToken) } returns refreshToken
-        every { jwtUtils.extractUserId(refreshToken) } returns user.id
+        every { jwtUtils.extractId(refreshToken) } returns user.id
         every { getUserUseCase.getActiveUserOrElseThrow(user.id) } returns user
         every { jwtUtils.generate(principal.getAttributes(), 1800000) } returns newRefreshToken
         every { jwtUtils.generate(principal.getAttributes(), 604800000) } returns newAccessToken
-        every { saveRefreshTokenPort.saveRefreshToken(any(), any()) } returns Unit
+        every { saveRefreshTokenPort.saveRefreshToken(any(), any(), any()) } returns Unit
 
         // when
         val result = service.refreshToken(refreshToken)
@@ -61,7 +60,7 @@ class RefreshTokenServiceTest {
         val user = UserSimpleInfo(1, "test@test.com", "test", User.Role.USER)
 
         every { loadRefreshTokenPort.loadRefreshToken(refreshToken) } returns refreshToken
-        every { jwtUtils.extractUserId(refreshToken) } returns user.id
+        every { jwtUtils.extractId(refreshToken) } returns user.id
         every { getUserUseCase.getActiveUserOrElseThrow(user.id) }.throws(IllegalArgumentException("User not found"))
 
         // when, then

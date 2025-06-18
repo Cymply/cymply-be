@@ -3,11 +3,9 @@ package com.cymply.auth
 import com.cymply.auth.adapter.`in`.web.AuthController
 import com.cymply.auth.application.port.`in`.RefreshTokenUseCase
 import com.cymply.auth.application.port.`in`.ReissueTokenUseCase
-import com.cymply.common.util.JwtUtils
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken

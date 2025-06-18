@@ -1,0 +1,10 @@
+services:
+  redis:
+    image: redis:7.4.2-alpine
+    ports:
+      - 6379:6379
+    # redis 작동 상태 확인
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      retries: 10

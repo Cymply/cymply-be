@@ -37,6 +37,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.session:spring-session-core")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")

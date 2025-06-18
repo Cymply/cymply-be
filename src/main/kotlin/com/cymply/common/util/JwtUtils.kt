@@ -43,10 +43,11 @@ class JwtUtils(
             .id
     }
 
-    fun extractUserId(token: String): Long {
-        return Jwts.parser().verifyWith(key).build()
+    fun extractId(token: String): Long {
+        return (Jwts.parser().verifyWith(key).build()
             .parseSignedClaims(token)
-            .payload["id"] as Long
+            .payload["id"] as Int)
+            .toLong()
     }
 
     fun generate(identities: Map<String, Any?>, expired: Long): String {
@@ -58,6 +59,7 @@ class JwtUtils(
             .id(UUID.randomUUID().toString())
             .claims(identities)
             .compact()
+            .toString()
     }
 
 }
