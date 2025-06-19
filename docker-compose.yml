@@ -4,6 +4,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+    env_file:
+      - cymply.env
     environment:
       SPRING_PROFILES_ACTIVE: dev
     # mysql, redis 컨테이너 작동 후 생성

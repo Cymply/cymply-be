@@ -56,12 +56,13 @@ jobs:
           script: |
             cd /home/ubuntu/cymply
 
-#            도커 로그인
+            # 도커 로그인
             echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
             sudo docker stop cymply-be || true
             sudo docker rm cymply-be || true
-#            .env 파일 생성
+           
+            # .env 파일 생성
             cat <<EOF > /home/ubuntu/cymply.env
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
@@ -69,7 +70,8 @@ jobs:
             KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
             BASE_URL=${{ secrets.BASE_URL }}
             EOF
-#            docker 이미지 pull, 컨테이너 실행 
+           
+            # docker 이미지 pull, 컨테이너 실행 
             sudo docker compose pull
             sudo docker compose down
             sudo docker compose up -d --remove-orphans
