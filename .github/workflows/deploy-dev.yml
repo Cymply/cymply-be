@@ -2,9 +2,9 @@ name: Deploy Cymply API
 
 on:
   push:
-    branches: [dev]
+    branches: [ dev ]
   pull_request:
-    branches: [dev]
+    branches: [ dev ]
 
 jobs:
   build-and-deploy:
@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-#          cache: 'gradle'
+      #          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -32,7 +32,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-#        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -41,11 +41,21 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
 
-#      - name: Build Docker image
-#        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cymply-be .
-#
-#      - name: Push Docker image
-#        run: docker push ${{ secrets.DOCKER_USERNAME }}/cymply-be
+      #      - name: Build Docker image
+      #        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cymply-be .
+      #
+      #      - name: Push Docker image
+      #        run: docker push ${{ secrets.DOCKER_USERNAME }}/cymply-be
+
+      - name: Copy Docker Compose file via SSH
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "docker-compose.yml"
+          target: /home/ubuntu/cymply/
 
       - name: Deploy via SSH with Docker Compose
         uses: appleboy/ssh-action@v1.0.0
@@ -61,16 +71,16 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
             sudo docker stop cymply-be || true
             sudo docker rm cymply-be || true
-           
+            
             # .env 파일 생성
-            cat <<EOF > /home/ubuntu/cymply.env
+            cat <<EOF > /home/ubuntu/cymply/cymply.env
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
             BASE_URL=${{ secrets.BASE_URL }}
             EOF
-           
+            
             # docker 이미지 pull, 컨테이너 실행 
             sudo docker compose pull
             sudo docker compose down
