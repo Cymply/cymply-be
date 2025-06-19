@@ -2,9 +2,9 @@ name: Deploy Cymply API
 
 on:
   push:
-    branches: [dev]
+    branches: [ dev ]
   pull_request:
-    branches: [dev]
+    branches: [ dev ]
 
 jobs:
   build-and-deploy:
@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-#          cache: 'gradle'
+      #          cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
@@ -32,7 +32,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-#        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -41,25 +41,38 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
 
-#      - name: Build Docker image
-#        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cymply-be .
-#
-#      - name: Push Docker image
-#        run: docker push ${{ secrets.DOCKER_USERNAME }}/cymply-be
+      #      - name: Build Docker image
+      #        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/cymply-be .
+      #
+      #      - name: Push Docker image
+      #        run: docker push ${{ secrets.DOCKER_USERNAME }}/cymply-be
 
-      - name: Deploy to Server via SSH
+      - name: Copy Docker Compose file via SSH
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker-compose.yml"
+          target: /home/ubuntu/cymply/
+
+      - name: Deploy via SSH with Docker Compose
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd /home/ubuntu/cymply
+
+            # 도커 로그인
             echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
             sudo docker stop cymply-be || true
             sudo docker rm cymply-be || true
             
-            cat <<EOF > /home/ubuntu/cymply.env
+            # .env 파일 생성
+            cat <<EOF > /home/ubuntu/cymply/cymply.env
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
@@ -67,11 +80,9 @@ jobs:
             BASE_URL=${{ secrets.BASE_URL }}
             EOF
             
-            sudo docker run -d \
-              -e SPRING_PROFILES_ACTIVE=dev \
-              --env-file /home/ubuntu/cymply.env \
-              --name cymply-be \
-              -p 8080:8080 \
-              ${{ secrets.DOCKER_USERNAME }}/cymply-be:latest
+            # docker 이미지 pull, 컨테이너 실행 
+            sudo docker compose pull
+            sudo docker compose down
+            sudo docker compose up -d --remove-orphans
             
             sudo docker image prune -f
