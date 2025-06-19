@@ -10,7 +10,7 @@ spring:
 
   data:
     redis:
-      host: localhost
+      host: redis # docker container
       port: 6379
 
   jpa:

@@ -2,7 +2,6 @@ package com.cymply.user.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
 import com.cymply.user.adapter.`in`.web.dto.SignupRequest
-import com.cymply.user.adapter.`in`.web.dto.SignupResponse
 import com.cymply.user.adapter.`in`.web.dto.UserResponse
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import com.cymply.user.application.port.`in`.RegisterUserUseCase
@@ -32,23 +31,23 @@ class UserGetController(
     override fun checkAvailableNickname(
         @AuthenticationPrincipal principal: Jwt,
         nickname: String
-    ): ApiResponse<Boolean?> {
+    ): ApiResponse<String?> {
         val result = validateNicknameUseCase.validateNickname(nickname)
         if (!result) {
             return ApiResponse.failure(content = null, errorMessage = "사용할 수 없는 닉네임입니디.")
         }
-        return ApiResponse.success(content = null)
+        return ApiResponse.success(content = "사용 가능한 닉네임입니다.")
     }
 
     override fun signupOAuth2User(
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody request: SignupRequest
-    ): ApiResponse<SignupResponse?> {
+    ): ApiResponse<String?> {
         val command = SignupRequest.from(principal, request)
         val result = registerUserUseCase.registerOAuth2User(command)
         if (result <= 0) {
             return ApiResponse.failure(content = null, errorMessage = "회원가입에 실패하였습니다. 다시 시도해주세요.")
         }
-        return ApiResponse.success(content = SignupResponse("accessToken", "refreshToken"))
+        return ApiResponse.success(content = "회원가입이 완료되었습니다.")
     }
 }

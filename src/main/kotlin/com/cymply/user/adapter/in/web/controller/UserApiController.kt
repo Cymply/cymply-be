@@ -1,7 +1,6 @@
 package com.cymply.user.adapter.`in`.web.controller
 
 import com.cymply.user.adapter.`in`.web.dto.SignupRequest
-import com.cymply.user.adapter.`in`.web.dto.SignupResponse
 import com.cymply.user.adapter.`in`.web.dto.UserResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -32,14 +31,13 @@ interface UserApiController {
         value = [
             ApiResponse(responseCode = "200", description = "성공"),
             ApiResponse(responseCode = "401", description = "잘못된 토큰이나 만료된 토큰인 경우"),
-            ApiResponse(responseCode = "404", description = "사용할 수 없는 닉네임인 경우"),
         ]
     )
     @GetMapping("/check/nickname/{nickname}")
     fun checkAvailableNickname(
         @AuthenticationPrincipal principal: Jwt,
         @PathVariable nickname: String
-    ): com.cymply.common.response.ApiResponse<Boolean?>
+    ): com.cymply.common.response.ApiResponse<String?>
 
     @Operation(summary = "회원가입", description = "OAuth2 회원가입 및 회원의 추가 정보 저장합니다.")
     @ApiResponses(
@@ -52,5 +50,5 @@ interface UserApiController {
     fun signupOAuth2User(
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody request: SignupRequest
-    ): com.cymply.common.response.ApiResponse<SignupResponse?>
+    ): com.cymply.common.response.ApiResponse<String?>
 }
