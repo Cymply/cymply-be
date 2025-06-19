@@ -1,7 +1,9 @@
 package com.cymply.user.application.service
 
 import com.cymply.user.application.port.`in`.RegisterUserUseCase
+import com.cymply.user.application.port.out.LoadUserPort
 import com.cymply.user.application.port.out.SaveUserPort
+import com.cymply.user.application.port.`in`.RegisterOAuth2UserCommand
 import com.cymply.user.domain.OAuth2User
 import com.cymply.user.domain.User
 import com.cymply.user.domain.UserProfile
@@ -11,19 +13,25 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class RegisterUserService(
+    private val loadUserPort: LoadUserPort,
     private val saveUserPort: SaveUserPort
 ) : RegisterUserUseCase {
     @Transactional
     override fun registerOAuth2User(command: RegisterOAuth2UserCommand): Long {
         val provider = UserProvider.valueOf(command.provider.uppercase())
-        val user = OAuth2User.of(
-            sub = command.sub,
-            provider = provider,
-            role = User.Role.USER,
-            email = command.email,
-            nickname = command.nickname,
-            profile = UserProfile(command.name, command.gender, command.birth)
-        )
-        return saveUserPort.saveUser(user)
+        val exist = loadUserPort.loadUserBySubAndProvider(command.sub, provider)
+
+        if (exist == null || exist.isDeletedUser()) {
+            val user = OAuth2User.of(
+                sub = command.sub,
+                provider = provider,
+                role = User.Role.USER,
+                email = command.email,
+                nickname = command.nickname,
+                profile = UserProfile(command.name, command.gender, command.birth)
+            )
+            return saveUserPort.saveUser(user)
+        }
+        return 0
     }
 }

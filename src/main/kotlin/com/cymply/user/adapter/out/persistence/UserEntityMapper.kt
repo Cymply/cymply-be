@@ -19,7 +19,7 @@ interface UserEntityMapper {
     fun from(user: User): UserEntity
 
     @SubclassMapping(source = OAuth2UserEntity::class, target = OAuth2User::class)
-    fun from(userEntity: UserEntity): User
+    fun from(user: UserEntity): User
 }
 
 @Mapper(componentModel = "spring")

@@ -11,14 +11,10 @@ import javax.crypto.spec.SecretKeySpec
 
 @Component
 class JwtUtils(
-    @Value("\${spring.jwt.secret}")
+    @Value("\${spring.security.jwt.secret}")
     private val secret: String,
-
-    @Value("\${spring.jwt.keys.identities}")
-    private val identitiesKey: String,
-
-    @Value("\${spring.jwt.keys.iss}")
-    private val issKey: String,
+    @Value("\${spring.app.host}")
+    private val issuer: String,
 ) {
     private lateinit var key: SecretKey
 
@@ -30,16 +26,6 @@ class JwtUtils(
         )
     }
 
-    fun getIdentities(token: String): Map<String, Any?> {
-        return Jwts
-            .parser()
-            .verifyWith(key)
-            .build()
-            .parseSignedClaims(token)
-            .payload
-            .get(identitiesKey, Map::class.java) as Map<String, Any?>
-    }
-
     fun isExpired(token: String): Boolean {
         return Jwts.parser().verifyWith(key).build()
             .parseSignedClaims(token)
@@ -48,13 +34,30 @@ class JwtUtils(
             .before(Date())
     }
 
-    fun generate(identity: Map<String, Any?>, expired: Long = 1000): String {
+    fun getId(token: String): String {
+        return Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(token)
+            .payload
+            .id
+    }
+
+    fun extractId(token: String): Long {
+        return (Jwts.parser().verifyWith(key).build()
+            .parseSignedClaims(token)
+            .payload["id"] as Int)
+            .toLong()
+    }
+
+    fun generate(identities: Map<String, Any?>, expired: Long): String {
         return Jwts.builder()
-            .issuer(issKey)
+            .issuer(issuer)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + expired))
             .signWith(key)
-            .claims(mapOf(identitiesKey to identity))
+            .id(UUID.randomUUID().toString())
+            .claims(identities)
             .compact()
+            .toString()
     }
+
 }

@@ -11,7 +11,7 @@ class GetUserService(
 ) : GetUserUseCase {
     override fun getActiveUserOrElseThrow(id: Long): UserSimpleInfo {
         val user = loadUserPort.loadUserById(id)
-        if (!user.isActiveUser()) {
+        if (user.isDeletedUser()) {
             throw IllegalArgumentException("Expired user with id $id.")
         }
         return UserSimpleInfo.from(user)
@@ -19,7 +19,7 @@ class GetUserService(
 
     override fun getActiveUser(provider: String, sub: String): UserSimpleInfo? {
         val user = loadUserPort.loadUserBySubAndProvider(sub, UserProvider.valueOf(provider.uppercase()))
-        if (user == null || !user.isActiveUser()) {
+        if (user == null || user.isDeletedUser()) {
             return null
         }
         return UserSimpleInfo.from(user)
