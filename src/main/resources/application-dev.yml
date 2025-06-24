@@ -58,3 +58,8 @@ spring:
 
 api-key:
   last-fm: 158efb6c0fd97dc64e730a293fc73a07
+lastfm:
+  api-key: ${LAST_FM_API_KEY}
+  api:
+    base-url: https://ws.audioscrobbler.com
+    search-path: 2.0

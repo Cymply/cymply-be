@@ -3,6 +3,7 @@ package com.cymply.music.adapter.`in`.web.controller
 import com.cymply.common.response.ApiResponse import com.cymply.music.adapter.`in`.web.dto.SearchMusicRequest
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import com.cymply.music.application.port.`in`.SearchMusicUseCase
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -13,6 +14,7 @@ class MusicController(
     private val searchMusicUseCase: SearchMusicUseCase
 ) : MusicApiController {
 
+    @GetMapping("/search")
     override fun searchMusic(
         @ModelAttribute request: SearchMusicRequest
     ): ApiResponse<List<SearchMusicResponse>> {
