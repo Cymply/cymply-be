@@ -7,7 +7,7 @@ import com.cymply.music.domain.model.Music
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
-@Component
+//@Component
 class LastFmSearchAdapter(
     private val apiClient: LastFmApiClient,
     @Value("\${lastfm.api-key}")

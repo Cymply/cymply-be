@@ -63,3 +63,13 @@ lastfm:
   api:
     base-url: https://ws.audioscrobbler.com
     search-path: 2.0
+
+spotify:
+  client-id: ${SPOTIFY_CLIENT_ID}
+  client-secret: ${SPOTIFY_CLIENT_SECRET}
+  auth:
+    base-url: https://accounts.spotify.com
+    token-path: /api/token
+  api:
+    base-url: https://api.spotify.com
+    search-path: /v1/search

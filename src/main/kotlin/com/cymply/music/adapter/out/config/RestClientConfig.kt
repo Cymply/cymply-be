@@ -37,8 +37,37 @@ class RestClientConfig(
     // 프록시 팩토리 컴포넌트 만들어서 중복 코드 제거하기
 
     @Bean
-    fun lastFmRestClient(): RestClient =
-        RestClient.builder()
-            .baseUrl("https://ws.audioscrobbler.com")
+    fun spotifyAuthClient(): SpotifyAuthClient {
+        val restClient = RestClient.builder()
+            .baseUrl(spotifyAuthBaseUrl)
+            .requestInterceptor { request, body, execution ->
+                logger.info("${request.method} ${request.uri}")
+                val response = execution.execute(request, body)
+                logger.info("${response.statusCode}")
+                response
+            }
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .build()
+        val adapter = RestClientAdapter.create(restClient)
+        val factory = HttpServiceProxyFactory.builderFor(adapter).build()
+
+        return factory.createClient(SpotifyAuthClient::class.java)
+    }
+
+    @Bean
+    fun spotifyApiClient(): SpotifyApiClient {
+        val restClient = RestClient.builder()
+            .baseUrl(spotifyApiBaseUrl)
+            .requestInterceptor { request, body, execution ->
+                logger.info("${request.method} ${request.uri}")
+                val response = execution.execute(request, body)
+                logger.info("${response.statusCode}")
+                response
+            }
+            .build()
+        val adapter = RestClientAdapter.create(restClient)
+        val factory = HttpServiceProxyFactory.builderFor(adapter).build()
+
+        return factory.createClient(SpotifyApiClient::class.java)
+    }
 }
