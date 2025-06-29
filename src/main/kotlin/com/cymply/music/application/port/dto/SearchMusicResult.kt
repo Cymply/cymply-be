@@ -5,6 +5,7 @@ import com.cymply.music.domain.model.Music
 data class SearchMusicResult(
     val title: String,
     val artist: String,
+    val album: String?,
     val thumbnail: String?,
 ) {
     companion object {
@@ -12,7 +13,8 @@ data class SearchMusicResult(
             SearchMusicResult(
                 title = music.title,
                 artist = music.artist,
-                thumbnail = null
+                album = music.album,
+                thumbnail = music.thumbnailUrl
             )
     }
 }

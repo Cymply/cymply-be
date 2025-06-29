@@ -1,15 +1,15 @@
 package com.cymply.music.application.port.dto
 
-data class LastFmSearchRequest(
+data class MusicSearchRequest(
     val keyword: String,
-    val limit: Int,
+    val size: Int,
     val page: Int,
 ) {
     companion object {
-        fun toRequest(query: SearchMusicQuery): LastFmSearchRequest =
-            LastFmSearchRequest(
+        fun toRequest(query: SearchMusicQuery): MusicSearchRequest =
+            MusicSearchRequest(
                 keyword = query.keyword,
-                limit = query.limit,
+                size = query.size,
                 page = query.page,
             )
     }

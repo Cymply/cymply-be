@@ -78,6 +78,10 @@ jobs:
             KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}
             KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}
             BASE_URL=${{ secrets.BASE_URL }}
+            LAST_FM_API_KEY=${{ secrets.LAST_FM_API_KEY }}
+            SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}
+            SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }}
+            GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
             EOF
             
             # docker 이미지 pull, 컨테이너 실행 
