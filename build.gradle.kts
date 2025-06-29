@@ -51,6 +51,12 @@ dependencies {
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 
+    // google data api
+    implementation("com.google.api-client:google-api-client:2.8.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.23.0")
+    implementation("com.google.apis:google-api-services-youtube:v3-rev20230816-2.0.0")
+    implementation("com.google.http-client:google-http-client-jackson2:1.39.2")
+
     runtimeOnly("com.h2database:h2")
 //    runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -56,8 +56,6 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
 
-api-key:
-  last-fm: 158efb6c0fd97dc64e730a293fc73a07
 lastfm:
   api-key: ${LAST_FM_API_KEY}
   api:
@@ -73,3 +71,6 @@ spotify:
   api:
     base-url: https://api.spotify.com
     search-path: /v1/search
+
+google:
+  api-key: ${GOOGLE_API_KEY}

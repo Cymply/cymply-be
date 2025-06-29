@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class SearchMusicService(
-    private val searchMusicPort: SearchMusicPort
+    private val searchMusicPort: SearchMusicPort,
 ) : SearchMusicUseCase {
 
     override fun searchMusic(query: SearchMusicQuery): List<SearchMusicResult> {
