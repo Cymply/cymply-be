@@ -18,7 +18,7 @@ data class SearchMusicRequest(
     fun toQuery(): SearchMusicQuery =
         SearchMusicQuery(
             keyword = keyword,
-            limit = limit,
+            size = limit,
             page = page
         )
 }
