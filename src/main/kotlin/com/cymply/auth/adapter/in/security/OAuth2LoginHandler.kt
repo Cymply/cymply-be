@@ -2,7 +2,6 @@ package com.cymply.auth.adapter.`in`.security
 
 import com.cymply.auth.adapter.`in`.dto.OAuth2LoginRequest
 import com.cymply.auth.application.port.`in`.OAuth2LoginUseCase
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
@@ -53,11 +52,8 @@ class OAuth2LoginSuccessHandler(
     }
 
     private fun setCookie(response: HttpServletResponse, key: String, value: String) {
-        val cookie = Cookie(key, value)
-        cookie.path = "/"
-        cookie.isHttpOnly = true
-        cookie.maxAge = 60
-        response.addCookie(cookie)
+        val cookieValue = "$key=$value; Max-Age=60; Path=/; HttpOnly; SameSite=Lax"
+        response.addHeader("Set-Cookie", cookieValue)
     }
 }
 
