@@ -48,8 +48,8 @@ erDiagram
         bigint receipt FK "수신자 ID"
         bigint music_id FK "음악 ID"
         text content "편지 내용"
-        tinyint is_read "편지 읽음 여부 (0: 안 읽음, 1: 읽음)"
         %% 음악 정보까지 ?
+        timestamp read_at "확인일시"
         timestamp created_at "생성일시"
         timestamp updated_at "수정일시"
         timestamp deleted_at "삭제일시"
