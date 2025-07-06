@@ -31,6 +31,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+    // nanoid
+    implementation("com.aventrix.jnanoid:jnanoid:2.0.0")
 
     // jwt
     implementation("io.jsonwebtoken:jjwt-api:0.12.3")

@@ -1,12 +1,12 @@
 package com.cymply.letter.application.service
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import com.cymply.letter.application.port.`in`.CreateLetterCodeUseCase
 import com.cymply.letter.application.port.out.LoadLetterCodePort
 import com.cymply.letter.application.port.out.SaveLetterCodePort
 import com.cymply.letter.domain.LetterCode
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 /**
  * 편지 수신 코드 생성
@@ -23,7 +23,7 @@ class CreateLetterCodeService(
     override fun createLetterCode(recipientId: Long): String {
         val exist = loadLetterCodePort.loadLetterCode(recipientId)
         if (exist == null) {
-            val code = LetterCode.of(recipientId, UUID.randomUUID().toString())
+            val code = LetterCode.of(recipientId, NanoIdUtils.randomNanoId())
             saveLetterCodePort.saveLetterCode(code)
             return code.code
         }
