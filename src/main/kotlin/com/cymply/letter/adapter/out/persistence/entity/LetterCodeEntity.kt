@@ -11,12 +11,12 @@ class LetterCodeEntity(
     @Id
     @Column(name = "letter_code_id")
     @GeneratedValue(strategy = IDENTITY)
-    val id: Long?,
+    val id: Long? = null,
     @Column(unique = true)
     val code: String,
     @Column(unique = true)
     val recipientId: Long,
-    val expiredAt: LocalDateTime
+    val expiredAt: LocalDateTime? = null
 ) : BaseTimeEntity() {
 
 }
