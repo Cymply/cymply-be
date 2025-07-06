@@ -27,7 +27,7 @@ class SpotifySearchAdapter(
                 title = item.name,
                 artist = item.artists.joinToString(", ") { it.name },
                 album = item.album.name,
-                thumbnailUrl = item.album.images.maxByOrNull { it.height }?.url
+                thumbnailUrl = item.album.images.maxBy { it.height }.url,
             )
         }
     }
