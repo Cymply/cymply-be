@@ -100,4 +100,24 @@ interface LetterApiController {
         @PathVariable code: String
     ): com.cymply.common.response.ApiResponse<RecipientResponse?>
 
+    /**
+     * letter-nickname
+     */
+
+    @Operation(summary = "송신자 닉네임 생성", description = "수신자에게 보여질 송신자의 닉네임을 설정합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "201",
+                description = "성공",
+            ),
+            ApiResponse(responseCode = "404", description = "오류가 발생했습니다.")
+        ]
+    )
+    @PostMapping("/code/{code}/nickname")
+    fun setNickname(
+        @AuthenticationPrincipal principal: Jwt,
+        @PathVariable code: String,
+        @RequestBody request: SetNicknameRequest
+    ): com.cymply.common.response.ApiResponse<Unit>
 }

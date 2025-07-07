@@ -3,7 +3,9 @@ package com.cymply.letter.adapter.`in`.web.controller
 import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.*
 import com.cymply.letter.application.port.`in`.CreateLetterCodeUseCase
+import com.cymply.letter.application.port.`in`.SetNicknameCommand
 import com.cymply.letter.application.port.`in`.GetRecipientUseCase
+import com.cymply.letter.application.port.`in`.SetNicknameUseCase
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -14,7 +16,8 @@ import java.time.LocalDateTime
 @RequestMapping("/api/v1/letters")
 class LetterController(
     private val createLetterCodeUseCase: CreateLetterCodeUseCase,
-    private val getRecipientUseCase: GetRecipientUseCase
+    private val getRecipientUseCase: GetRecipientUseCase,
+    private val setNicknameUseCase: SetNicknameUseCase
 ) : LetterApiController {
 
     @GetMapping("/{id}")
@@ -45,16 +48,15 @@ class LetterController(
         @AuthenticationPrincipal principal: Jwt,
     ): ApiResponse<LetterCodeResponse?> {
         val id = principal.getClaimAsString("id").toLong()
+        val result = createLetterCodeUseCase.createLetterCode(id)
 
         /**
          * TODO
          * 편지 작성 폼 URL 사용 시 재조정 필요
          */
-        val result = createLetterCodeUseCase.createLetterCode(id)
         val response = LetterCodeResponse(result, "https://www.cymply.kr/letter?code=${result}")
         return ApiResponse.success(response)
     }
-
 
     @GetMapping("/code/{code}/recipient")
     override fun getRecipient(
@@ -64,6 +66,18 @@ class LetterController(
         val info = getRecipientUseCase.getRecipient(code)
         val response = RecipientResponse.from(info, code)
         return ApiResponse.success(response)
+    }
+
+    @PostMapping("/code/{code}/nickname")
+    override fun setNickname(
+        @AuthenticationPrincipal principal: Jwt,
+        @PathVariable code: String,
+        @RequestBody request: SetNicknameRequest
+    ): ApiResponse<Unit> {
+        val id = principal.getClaimAsString("id").toLong()
+        val command = SetNicknameCommand(senderId = id, code = code, request.nickname)
+        setNicknameUseCase.setNickname(command)
+        return ApiResponse.success(Unit)
     }
 
 
