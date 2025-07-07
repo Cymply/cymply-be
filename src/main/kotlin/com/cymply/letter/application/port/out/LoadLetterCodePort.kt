@@ -4,4 +4,6 @@ import com.cymply.letter.domain.LetterCode
 
 interface LoadLetterCodePort {
     fun loadLetterCode(recipientId: Long): LetterCode?
+
+    fun loadLetterCode(code: String): LetterCode
 }

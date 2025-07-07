@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository
 
 interface LetterCodeJapRepository : CrudRepository<LetterCodeEntity, String> {
     fun findByRecipientId(recipientId: Long): LetterCodeEntity?
+
+    fun findByCode(code: String): LetterCodeEntity?
 }

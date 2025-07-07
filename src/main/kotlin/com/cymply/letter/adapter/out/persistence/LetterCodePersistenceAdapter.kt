@@ -12,11 +12,17 @@ class LetterCodePersistenceAdapter(
     private val letterCodeEntityMapper: LetterCodeEntityMapper
 ) : LoadLetterCodePort, SaveLetterCodePort {
     override fun loadLetterCode(recipientId: Long): LetterCode? {
-        val entity = letterCodeJpaRepository.findByRecipientId(recipientId)
-        if (entity != null) {
-            return letterCodeEntityMapper.to(entity)
+        letterCodeJpaRepository.findByRecipientId(recipientId)?.let {
+            return letterCodeEntityMapper.to(it)
         }
         return null
+    }
+
+    override fun loadLetterCode(code: String): LetterCode {
+        letterCodeJpaRepository.findByCode(code)?.let {
+            return letterCodeEntityMapper.to(it)
+        }
+        throw IllegalArgumentException("Not found letter code")
     }
 
     override fun saveLetterCode(letterCode: LetterCode): Long {

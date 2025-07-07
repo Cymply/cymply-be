@@ -1,13 +1,10 @@
 package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
-import com.cymply.letter.adapter.`in`.web.dto.LetterCodeResponse
-import com.cymply.letter.adapter.`in`.web.dto.LetterResponse
-import com.cymply.letter.adapter.`in`.web.dto.SendLetterRequest
-import com.cymply.letter.adapter.`in`.web.dto.SenderGroupedLettersResponse
+import com.cymply.letter.adapter.`in`.web.dto.*
 import com.cymply.letter.application.port.`in`.CreateLetterCodeUseCase
+import com.cymply.letter.application.port.`in`.GetRecipientUseCase
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -16,7 +13,8 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/api/v1/letters")
 class LetterController(
-    private val createLetterCodeUseCase: CreateLetterCodeUseCase
+    private val createLetterCodeUseCase: CreateLetterCodeUseCase,
+    private val getRecipientUseCase: GetRecipientUseCase
 ) : LetterApiController {
 
     @GetMapping("/{id}")
@@ -32,6 +30,14 @@ class LetterController(
 //        @RequestParam request: GetLettersRequest
     ): ApiResponse<List<SenderGroupedLettersResponse>> {
         return ApiResponse.success(listOf(SenderGroupedLettersResponse(1L, "", emptyList())))
+    }
+
+    @PostMapping
+    override fun sendLetter(
+        @AuthenticationPrincipal principal: Jwt,
+        request: SendLetterRequest
+    ): ApiResponse<Unit> {
+        return ApiResponse.success(Unit)
     }
 
     @PostMapping("/code")
@@ -50,12 +56,14 @@ class LetterController(
     }
 
 
-    @PostMapping
-    override fun sendLetter(
+    @GetMapping("/code/{code}/recipient")
+    override fun getRecipient(
         @AuthenticationPrincipal principal: Jwt,
-        request: SendLetterRequest
-    ): ApiResponse<Unit> {
-        return ApiResponse.success(Unit)
+        @PathVariable code: String
+    ): ApiResponse<RecipientResponse?> {
+        val info = getRecipientUseCase.getRecipient(code)
+        val response = RecipientResponse.from(info, code)
+        return ApiResponse.success(response)
     }
 
 

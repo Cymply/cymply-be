@@ -1,9 +1,6 @@
 package com.cymply.letter.adapter.`in`.web.controller
 
-import com.cymply.letter.adapter.`in`.web.dto.LetterCodeResponse
-import com.cymply.letter.adapter.`in`.web.dto.LetterResponse
-import com.cymply.letter.adapter.`in`.web.dto.SendLetterRequest
-import com.cymply.letter.adapter.`in`.web.dto.SenderGroupedLettersResponse
+import com.cymply.letter.adapter.`in`.web.dto.*
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -19,7 +16,9 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Letter", description = "편지 관련 API")
 @RequestMapping("/api/v1/letters")
 interface LetterApiController {
-    // Query
+    /**
+     * letter
+     */
     @Operation(summary = "편지 단건 조회", description = "편지 ID로 편지를 상세 조회합니다.")
     @ApiResponses(
         value = [
@@ -55,21 +54,6 @@ interface LetterApiController {
     fun getGroupedReceivedLetters(
     ): com.cymply.common.response.ApiResponse<List<SenderGroupedLettersResponse>>
 
-
-    // Command
-    @Operation(summary = "편지 작성 링크 생성", description = "링크를 통해 특정 사용자에게 편지를 보낼 수 있습니다.")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "201", description = "성공"),
-            ApiResponse(responseCode = "404", description = "편지 전송 중 오류가 발생했습니다.")
-        ]
-    )
-    @PostMapping("/code")
-    fun createLetterCode(
-        @AuthenticationPrincipal principal: Jwt
-    ): com.cymply.common.response.ApiResponse<LetterCodeResponse?>
-
-
     @Operation(summary = "편지 전송", description = "특정 사용자에게 편지를 보냅니다.")
     @ApiResponses(
         value = [
@@ -85,4 +69,35 @@ interface LetterApiController {
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody @Schema(implementation = SendLetterRequest::class) request: SendLetterRequest
     ): com.cymply.common.response.ApiResponse<Unit>
+
+
+    /**
+     * invite-code
+     */
+    @Operation(summary = "편지 작성 링크(코드) 생성", description = "링크를 통해 사용자에게 편지를 보낼 수 있습니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "성공"),
+            ApiResponse(responseCode = "404", description = "오류가 발생했습니다.")
+        ]
+    )
+    @PostMapping("/code")
+    fun createLetterCode(
+        @AuthenticationPrincipal principal: Jwt
+    ): com.cymply.common.response.ApiResponse<LetterCodeResponse?>
+
+
+    @Operation(summary = "수신자 정보 조회", description = "편지 작성 코드를 통해 수신자의 정보를 조회합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "404", description = "유효하지 않은 코드입니다.")
+        ]
+    )
+    @GetMapping("/code/{code}/recipient")
+    fun getRecipient(
+        @AuthenticationPrincipal principal: Jwt,
+        @PathVariable code: String
+    ): com.cymply.common.response.ApiResponse<RecipientResponse?>
+
 }
