@@ -1,4 +1,4 @@
-package com.cymply.letter.adapter.out.persistence
+package com.cymply.letter.adapter.out.persistence.repository
 
 import com.cymply.letter.adapter.out.persistence.entity.LetterNicknameEntity
 import org.springframework.data.repository.CrudRepository

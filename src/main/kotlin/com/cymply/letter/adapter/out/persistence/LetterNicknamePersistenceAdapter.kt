@@ -1,6 +1,8 @@
 package com.cymply.letter.adapter.out.persistence
 
 
+import com.cymply.letter.adapter.out.persistence.mapper.LetterNicknameEntityMapper
+import com.cymply.letter.adapter.out.persistence.repository.LetterNicknameJapRepository
 import com.cymply.letter.application.port.out.LoadLetterNicknamePort
 import com.cymply.letter.application.port.out.SaveLetterNicknamePort
 import com.cymply.letter.domain.LetterNickname

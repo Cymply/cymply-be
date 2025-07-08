@@ -1,5 +1,7 @@
 package com.cymply.letter.adapter.out.persistence
 
+import com.cymply.letter.adapter.out.persistence.mapper.LetterCodeEntityMapper
+import com.cymply.letter.adapter.out.persistence.repository.LetterCodeJapRepository
 import com.cymply.letter.application.port.out.LoadLetterCodePort
 import com.cymply.letter.application.port.out.SaveLetterCodePort
 import com.cymply.letter.domain.LetterCode
