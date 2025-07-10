@@ -9,6 +9,7 @@ erDiagram
     user ||--o{ letter: "has"
     user ||--o{ letter_nickname: "sets nickname to"
     user ||--o{ playlist: "has"
+    user ||--|| recipient_code: "has"
     letter }o--|| music: "refers to"
     playlist ||--o{ playlist_music: "contains"
     music ||--o{ playlist_music: "belongs to"
@@ -39,16 +40,18 @@ erDiagram
         timestamp updated_at "수정일시"
         timestamp deleted_at "삭제일시"
     }
+
 %% 수신자 조회 코드 
-    letter_code {
-        bigint letter_code_id PK "편지 코드 ID"
-        bigint reciept_id FK "수신자 ID"
+    recipient_code {
+        bigint recipient_code_id PK "편지 코드 ID"
         varchar(50) code "코드(UNIQUE)"
+        bigint reciept_id FK "수신자 ID"
         timestamp created_at "생성일시"
         timestamp updated_at "수정일시"
         timestamp deleted_at "삭제일시"
         timestamp expired_at "만료일시"
     }
+
 %% 수신자에게 보여질 닉네임 
     letter_nickname {
         bigint letter_nickname_id PK "별명 ID"

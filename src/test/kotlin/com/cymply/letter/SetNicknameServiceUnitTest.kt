@@ -1,12 +1,12 @@
 package com.cymply.letter
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
+import com.cymply.user.application.port.`in`.GetRecipientUseCase
 import com.cymply.letter.application.port.`in`.SetNicknameCommand
-import com.cymply.letter.application.port.out.LoadLetterCodePort
 import com.cymply.letter.application.port.out.LoadLetterNicknamePort
 import com.cymply.letter.application.port.out.SaveLetterNicknamePort
 import com.cymply.letter.application.service.SetNicknameService
-import com.cymply.letter.domain.LetterCode
+import com.cymply.user.domain.RecipientCode
 import com.cymply.letter.domain.LetterNickname
 import com.cymply.user.domain.OAuth2User
 import com.cymply.user.domain.User
@@ -20,11 +20,11 @@ import java.time.LocalDateTime
 
 class SetNicknameServiceUnitTest {
 
-    private val loadLetterCodePort = mockk<LoadLetterCodePort>()
+    private val getRecipientUseCase = mockk<GetRecipientUseCase>()
     private val loadLetterNicknamePort = mockk<LoadLetterNicknamePort>()
     private val saveLetterNicknamePort = mockk<SaveLetterNicknamePort>()
 
-    private var service = SetNicknameService(loadLetterCodePort, loadLetterNicknamePort, saveLetterNicknamePort)
+    private var service = SetNicknameService(getRecipientUseCase, loadLetterNicknamePort, saveLetterNicknamePort)
 
     @Test
     fun `닉네임 설정 성공`() {
@@ -51,14 +51,13 @@ class SetNicknameServiceUnitTest {
             NanoIdUtils.randomNanoId()
         )
 
-        val code = LetterCode(
+        val code = RecipientCode(
             1L,
-            recipient.getIdOrThrow(),
             NanoIdUtils.randomNanoId(),
+            recipient.getIdOrThrow(),
             LocalDateTime.now()
         )
 
-        every { loadLetterCodePort.loadLetterCode(code.code) }.returns(code)
         every { loadLetterNicknamePort.loadLetterNickname(sender.id!!, recipient.id!!) }.returns(null)
         every { saveLetterNicknamePort.saveLetterNickname(any()) }.returns(1L)
         val command = SetNicknameCommand(sender.getIdOrThrow(), code.code, "test")
@@ -93,16 +92,15 @@ class SetNicknameServiceUnitTest {
             NanoIdUtils.randomNanoId()
         )
 
-        val code = LetterCode(
+        val code = RecipientCode(
             1L,
-            recipient.getIdOrThrow(),
             NanoIdUtils.randomNanoId(),
+            recipient.getIdOrThrow(),
             LocalDateTime.now()
         )
 
         val nickname = LetterNickname(sender.id!!, recipient.id!!, "test2", LocalDateTime.now())
 
-        every { loadLetterCodePort.loadLetterCode(code.code) }.returns(code)
         every { loadLetterNicknamePort.loadLetterNickname(sender.id!!, recipient.id!!) }.returns(nickname)
         every { saveLetterNicknamePort.saveLetterNickname(any()) }.returns(1L)
         val command = SetNicknameCommand(sender.getIdOrThrow(), code.code, "test")

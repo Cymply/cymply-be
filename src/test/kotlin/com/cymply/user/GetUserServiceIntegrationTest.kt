@@ -1,7 +1,7 @@
 package com.cymply.user
 
 import com.cymply.common.model.Gender
-import com.cymply.user.adapter.out.persistence.UserJpaRepository
+import com.cymply.user.adapter.out.persistence.repository.UserJpaRepository
 import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.adapter.out.persistence.entity.UserEntityProfile
 import com.cymply.user.application.port.`in`.GetUserUseCase

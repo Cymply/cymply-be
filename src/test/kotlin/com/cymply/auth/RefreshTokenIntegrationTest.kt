@@ -4,7 +4,7 @@ import com.cymply.auth.adapter.out.redis.RefreshRefreshTokenRedisAdapter
 import com.cymply.auth.application.service.RefreshTokenService
 import com.cymply.auth.domain.AuthenticatedPrincipal
 import com.cymply.common.util.JwtUtils
-import com.cymply.user.adapter.out.persistence.OAuth2UserJpaRepository
+import com.cymply.user.adapter.out.persistence.repository.OAuth2UserJpaRepository
 import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.domain.User
 import com.cymply.user.domain.UserProvider

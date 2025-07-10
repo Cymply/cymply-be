@@ -72,38 +72,8 @@ interface LetterApiController {
 
 
     /**
-     * invite-code
-     */
-    @Operation(summary = "편지 작성 링크(코드) 생성", description = "링크를 통해 사용자에게 편지를 보낼 수 있습니다.")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "201", description = "성공"),
-            ApiResponse(responseCode = "404", description = "오류가 발생했습니다.")
-        ]
-    )
-    @PostMapping("/code")
-    fun createLetterCode(
-        @AuthenticationPrincipal principal: Jwt
-    ): com.cymply.common.response.ApiResponse<LetterCodeResponse?>
-
-
-    @Operation(summary = "수신자 정보 조회", description = "편지 작성 코드를 통해 수신자의 정보를 조회합니다.")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "성공"),
-            ApiResponse(responseCode = "404", description = "유효하지 않은 코드입니다.")
-        ]
-    )
-    @GetMapping("/code/{code}/recipient")
-    fun getRecipient(
-        @AuthenticationPrincipal principal: Jwt,
-        @PathVariable code: String
-    ): com.cymply.common.response.ApiResponse<RecipientResponse?>
-
-    /**
      * letter-nickname
      */
-
     @Operation(summary = "송신자 닉네임 생성", description = "수신자에게 보여질 송신자의 닉네임을 설정합니다.")
     @ApiResponses(
         value = [
@@ -119,5 +89,22 @@ interface LetterApiController {
         @AuthenticationPrincipal principal: Jwt,
         @PathVariable code: String,
         @RequestBody request: SetNicknameRequest
+    ): com.cymply.common.response.ApiResponse<Unit>
+
+
+    @Operation(summary = "송신자 닉네임 조회", description = "수신자에게 보여질 송신자의 닉네임을 조회합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(
+                responseCode = "200",
+                description = "성공",
+            ),
+            ApiResponse(responseCode = "404", description = "오류가 발생했습니다.")
+        ]
+    )
+    @GetMapping("/code/{code}/nickname")
+    fun getNickname(
+        @AuthenticationPrincipal principal: Jwt,
+        @PathVariable code: String,
     ): com.cymply.common.response.ApiResponse<Unit>
 }

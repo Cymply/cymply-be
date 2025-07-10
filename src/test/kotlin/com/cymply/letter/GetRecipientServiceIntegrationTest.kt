@@ -1,8 +1,8 @@
 package com.cymply.letter
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
-import com.cymply.letter.adapter.out.persistence.entity.LetterCodeEntity
-import com.cymply.letter.application.service.GetRecipientService
+import com.cymply.user.adapter.out.persistence.entity.RecipientCodeEntity
+import com.cymply.user.application.service.GetRecipientService
 import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.domain.User
 import com.cymply.user.domain.UserProvider
@@ -34,7 +34,7 @@ class GetRecipientServiceIntegrationTest {
             provider = UserProvider.KAKAO,
         )
 
-        val code = LetterCodeEntity(
+        val code = RecipientCodeEntity(
             code = NanoIdUtils.randomNanoId(),
             recipientId = 1L,
             expiredAt = null
