@@ -12,7 +12,7 @@ class PlayMusicService(
 ) : PlayMusicUseCase {
 
     override fun playMusic(query: PlayMusicQuery): PlayMusicResult {
-        val ids = youTubePort.searchVideoIds(query = "${query.artist} ${query.title}", maxResult = 1)
+        val ids = youTubePort.searchVideoIds(query = "${query.artist} ${query.title} official audio", maxResult = 1)
         val videoId = ids.firstOrNull()
             ?: throw IllegalStateException("${query.artist} ${query.title} 검색 결과가 없습니다.")
         return PlayMusicResult(videoUrl = "https://www.youtube.com/watch?v=$videoId")

@@ -45,7 +45,7 @@ class OAuth2LoginSuccessHandler(
         response.status = HttpStatus.OK.value()
 
         val redirect = when (result.scopes?.firstOrNull()) {
-            "user:signup" -> "${client}/signup"
+            "user:signup" -> "${client}/signup/step1"
             else -> "${client}/"
         }
         response.sendRedirect(redirect)

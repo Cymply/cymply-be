@@ -10,7 +10,7 @@ data class SearchMusicUrlResponse(
     val videoUrl: String
 ) {
     companion object {
-        fun of(result: PlayMusicResult): SearchMusicUrlResponse =
+        fun from(result: PlayMusicResult): SearchMusicUrlResponse =
             SearchMusicUrlResponse(
                 videoUrl = result.videoUrl
             )
