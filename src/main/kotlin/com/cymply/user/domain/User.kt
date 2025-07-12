@@ -18,7 +18,7 @@ abstract class User(
     fun getIdOrThrow() = id ?: throw IllegalStateException("User id is null.")
 
     fun verifyValidUser() {
-        if (!isDeletedUser()) {
+        if (isDeletedUser()) {
             throw IllegalArgumentException("Already withdraw, User: $id")
         }
     }

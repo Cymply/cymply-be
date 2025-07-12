@@ -1,7 +1,7 @@
 package com.cymply.letter.application.port.`in`
 
-data class SetNicknameCommand(
+data class SetLetterNicknameCommand(
     val senderId: Long,
-    val code: String,
+    val recipientCode: String,
     val nickname: String
 )

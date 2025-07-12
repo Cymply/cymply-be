@@ -2,15 +2,14 @@ package com.cymply.letter
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
 import com.cymply.user.application.port.`in`.GetRecipientUseCase
-import com.cymply.letter.application.port.`in`.SetNicknameCommand
+import com.cymply.letter.application.port.`in`.SetLetterNicknameCommand
 import com.cymply.letter.application.port.out.LoadLetterNicknamePort
 import com.cymply.letter.application.port.out.SaveLetterNicknamePort
-import com.cymply.letter.application.service.SetNicknameService
+import com.cymply.letter.application.service.SetLetterNicknameService
 import com.cymply.user.domain.RecipientCode
 import com.cymply.letter.domain.LetterNickname
-import com.cymply.user.domain.OAuth2User
+import com.cymply.user.application.service.UserSimpleInfo
 import com.cymply.user.domain.User
-import com.cymply.user.domain.UserProvider
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -24,89 +23,84 @@ class SetNicknameServiceUnitTest {
     private val loadLetterNicknamePort = mockk<LoadLetterNicknamePort>()
     private val saveLetterNicknamePort = mockk<SaveLetterNicknamePort>()
 
-    private var service = SetNicknameService(getRecipientUseCase, loadLetterNicknamePort, saveLetterNicknamePort)
+    private var service = SetLetterNicknameService(getRecipientUseCase, loadLetterNicknamePort, saveLetterNicknamePort)
 
     @Test
     fun `닉네임 설정 성공`() {
         // given
-        val recipient = OAuth2User(
+        val recipient = UserSimpleInfo(
             1L,
             "test1@test.com",
             "test1",
             User.Role.USER,
-            null,
-            null,
-            UserProvider.GOOGLE,
-            NanoIdUtils.randomNanoId()
         )
 
-        val sender = OAuth2User(
+        val sender = UserSimpleInfo(
             2L,
             "test2@test.com",
             "test2",
-            User.Role.USER,
-            null,
-            null,
-            UserProvider.KAKAO,
-            NanoIdUtils.randomNanoId()
+            User.Role.USER
         )
 
         val code = RecipientCode(
             1L,
             NanoIdUtils.randomNanoId(),
-            recipient.getIdOrThrow(),
+            recipient.id,
             LocalDateTime.now()
         )
 
-        every { loadLetterNicknamePort.loadLetterNickname(sender.id!!, recipient.id!!) }.returns(null)
-        every { saveLetterNicknamePort.saveLetterNickname(any()) }.returns(1L)
-        val command = SetNicknameCommand(sender.getIdOrThrow(), code.code, "test")
+        every { getRecipientUseCase.getRecipient(code.code) }.returns(recipient)
+        every { loadLetterNicknamePort.load(sender.id, recipient.id) }.returns(null)
+        every { saveLetterNicknamePort.save(any()) }.returns(1L)
+
+        val command = SetLetterNicknameCommand(sender.id, code.code, "test")
 
         // when
-        service.setNickname(command)
-        verify { saveLetterNicknamePort.saveLetterNickname(any()) }
+        service.setLetterNickname(command)
+
+        // then
+        verify { saveLetterNicknamePort.save(any()) }
     }
 
     @Test
     fun `이미 닉네임이 설정된 경우 Exception을 반환한다`() {
         // given
-        val sender = OAuth2User(
-            2L,
-            "test2@test.com",
-            "test2",
-            User.Role.USER,
-            null,
-            null,
-            UserProvider.KAKAO,
-            NanoIdUtils.randomNanoId()
-        )
-
-        val recipient = OAuth2User(
+        val recipient = UserSimpleInfo(
             1L,
             "test1@test.com",
             "test1",
             User.Role.USER,
-            null,
-            null,
-            UserProvider.GOOGLE,
-            NanoIdUtils.randomNanoId()
+        )
+
+        val sender = UserSimpleInfo(
+            2L,
+            "test2@test.com",
+            "test2",
+            User.Role.USER
         )
 
         val code = RecipientCode(
             1L,
             NanoIdUtils.randomNanoId(),
-            recipient.getIdOrThrow(),
+            recipient.id,
             LocalDateTime.now()
         )
 
-        val nickname = LetterNickname(sender.id!!, recipient.id!!, "test2", LocalDateTime.now())
+        val nickname = LetterNickname(
+            1L,
+            recipient.id,
+            "test2-old",
+            LocalDateTime.now()
+        )
 
-        every { loadLetterNicknamePort.loadLetterNickname(sender.id!!, recipient.id!!) }.returns(nickname)
-        every { saveLetterNicknamePort.saveLetterNickname(any()) }.returns(1L)
-        val command = SetNicknameCommand(sender.getIdOrThrow(), code.code, "test")
+        every { getRecipientUseCase.getRecipient(code.code) }.returns(recipient)
+        every { loadLetterNicknamePort.load(sender.id, recipient.id) }.returns(nickname)
+        every { saveLetterNicknamePort.save(any()) }.returns(1L)
+
+        val command = SetLetterNicknameCommand(sender.id, code.code, "test2-new")
 
         // when, then
-        Assertions.assertThatThrownBy { service.setNickname(command) }
+        Assertions.assertThatThrownBy { service.setLetterNickname(command) }
             .isInstanceOf(IllegalArgumentException::class.java)
     }
 }

@@ -2,8 +2,9 @@ package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.*
-import com.cymply.letter.application.port.`in`.SetNicknameCommand
-import com.cymply.letter.application.port.`in`.SetNicknameUseCase
+import com.cymply.letter.application.port.`in`.GetLetterNicknameUseCase
+import com.cymply.letter.application.port.`in`.SetLetterNicknameCommand
+import com.cymply.letter.application.port.`in`.SetLetterNicknameUseCase
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -13,7 +14,8 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/api/v1/letters")
 class LetterController(
-    private val setNicknameUseCase: SetNicknameUseCase
+    private val setLetterNicknameUseCase: SetLetterNicknameUseCase,
+    private val getLetterNicknameUseCase: GetLetterNicknameUseCase,
 ) : LetterApiController {
 
     @GetMapping("/{id}")
@@ -40,24 +42,24 @@ class LetterController(
     }
 
 
-    @PostMapping("/code/{code}/nickname")
-    override fun setNickname(
+    override fun setLetterNickname(
         @AuthenticationPrincipal principal: Jwt,
-        @PathVariable code: String,
-        @RequestBody request: SetNicknameRequest
+        @RequestBody request: SetLetterNicknameRequest
     ): ApiResponse<Unit> {
         val id = principal.getClaimAsString("id").toLong()
-        val command = SetNicknameCommand(senderId = id, code = code, request.nickname)
-        setNicknameUseCase.setNickname(command)
+        val command = SetLetterNicknameCommand(id, request.recipientCode, request.nickname)
+        setLetterNicknameUseCase.setLetterNickname(command)
         return ApiResponse.success(Unit)
     }
 
-    @GetMapping("/code/{code}/nickname")
-    override fun getNickname(
+    override fun getLetterNickname(
         @AuthenticationPrincipal principal: Jwt,
-        @PathVariable code: String,
-    ): ApiResponse<Unit> {
-        TODO("Not yet implemented")
+        @RequestParam recipientCode: String,
+    ): ApiResponse<LetterNicknameResponse> {
+        val id = principal.getClaimAsString("id").toLong()
+        val info = getLetterNicknameUseCase.getLetterNickname(id, recipientCode)
+        val response = LetterNicknameResponse.from(info)
+        return ApiResponse.success(response)
     }
 
 

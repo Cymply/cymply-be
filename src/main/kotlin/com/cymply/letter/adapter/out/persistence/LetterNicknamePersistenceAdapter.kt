@@ -15,14 +15,17 @@ class LetterNicknamePersistenceAdapter(
     private val letterNicknameEntityMapper: LetterNicknameEntityMapper
 ) : LoadLetterNicknamePort, SaveLetterNicknamePort {
 
-    override fun loadLetterNickname(senderId: Long, recipientId: Long): LetterNickname? {
-        letterNicknameJpaRepository.findBySenderIdAndRecipientId(senderId, recipientId)?.let {
-            return letterNicknameEntityMapper.to(it)
+    override fun load(senderId: Long, recipientId: Long): LetterNickname? {
+        val entity = letterNicknameJpaRepository.findBySenderIdAndRecipientId(senderId, recipientId)
+
+        if (entity != null) {
+            return letterNicknameEntityMapper.to(entity)
         }
+
         return null
     }
 
-    override fun saveLetterNickname(nickname: LetterNickname): Long {
+    override fun save(nickname: LetterNickname): Long {
         val entity = letterNicknameEntityMapper.to(nickname)
         val result = letterNicknameJpaRepository.save(entity)
         return result.id ?: -1

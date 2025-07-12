@@ -4,5 +4,5 @@ import com.cymply.letter.domain.LetterNickname
 
 
 interface LoadLetterNicknamePort {
-    fun loadLetterNickname(senderId: Long, recipientId: Long): LetterNickname?
+    fun load(senderId: Long, recipientId: Long): LetterNickname?
 }
