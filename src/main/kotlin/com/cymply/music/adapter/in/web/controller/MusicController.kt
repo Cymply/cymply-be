@@ -23,7 +23,7 @@ class MusicController(
         @ModelAttribute request: SearchMusicRequest
     ): ApiResponse<List<SearchMusicResponse>> {
         val result = searchMusicUseCase.searchMusic(request.toQuery())
-        return ApiResponse.success(result.map { SearchMusicResponse.of(it) })
+        return ApiResponse.success(result.map { SearchMusicResponse.from(it) })
     }
 
     @GetMapping("/search/url")
@@ -31,7 +31,7 @@ class MusicController(
         @ModelAttribute request: SearchMusicUrlRequest
     ): ApiResponse<SearchMusicUrlResponse> {
         val result = playMusicUseCase.playMusic(request.toQuery())
-        return ApiResponse.success(SearchMusicUrlResponse.of(result))
+        return ApiResponse.success(SearchMusicUrlResponse.from(result))
     }
 
 }

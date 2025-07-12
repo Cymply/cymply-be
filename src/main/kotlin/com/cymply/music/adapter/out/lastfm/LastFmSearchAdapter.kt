@@ -5,7 +5,6 @@ import com.cymply.music.application.port.dto.MusicSearchRequest
 import com.cymply.music.application.port.out.SearchMusicPort
 import com.cymply.music.domain.model.Music
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.stereotype.Component
 
 //@Component
 class LastFmSearchAdapter(
@@ -26,7 +25,8 @@ class LastFmSearchAdapter(
                 title = track.name,
                 artist = track.artist,
                 album = null,
-                thumbnailUrl = null
+                thumbnailUrl = track.image[0].url,
+                videoUrl = null
             )
         }
     }

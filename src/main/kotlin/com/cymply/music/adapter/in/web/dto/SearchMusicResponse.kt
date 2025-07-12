@@ -16,7 +16,7 @@ data class SearchMusicResponse(
     val thumbnail: String?,
 ) {
     companion object {
-        fun of(result: SearchMusicResult): SearchMusicResponse =
+        fun from(result: SearchMusicResult): SearchMusicResponse =
             SearchMusicResponse(
                 title = result.title,
                 artist = result.artist,
