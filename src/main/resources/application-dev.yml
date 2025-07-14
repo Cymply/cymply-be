@@ -8,6 +8,12 @@ spring:
     host: http://34.64.182.180:8080
     client: http://localhost:3000
 
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+
   data:
     redis:
       host: redis # docker container
