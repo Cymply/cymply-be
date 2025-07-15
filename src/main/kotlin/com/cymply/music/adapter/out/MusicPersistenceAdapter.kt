@@ -19,6 +19,16 @@ class MusicPersistenceAdapter(
         return mapper.from(entity)
     }
 
+    override fun loadByTitleAndArtist(title: String, artist: String): Music? {
+        val entity = repository.findByTitleAndArtist(title, artist)
+
+        if (entity != null) {
+            return mapper.from(entity)
+        }
+        return null
+    }
+
+
     override fun save(music: Music): Music {
         val entity = repository.save(mapper.from(music))
         return mapper.from(entity)
