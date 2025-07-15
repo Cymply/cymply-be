@@ -2,9 +2,7 @@ package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.*
-import com.cymply.letter.application.port.`in`.GetLetterNicknameUseCase
-import com.cymply.letter.application.port.`in`.SetLetterNicknameCommand
-import com.cymply.letter.application.port.`in`.SetLetterNicknameUseCase
+import com.cymply.letter.application.port.`in`.*
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
@@ -16,6 +14,7 @@ import java.time.LocalDateTime
 class LetterController(
     private val setLetterNicknameUseCase: SetLetterNicknameUseCase,
     private val getLetterNicknameUseCase: GetLetterNicknameUseCase,
+    private val sendLetterUseCase: SendLetterUseCase,
 ) : LetterApiController {
 
     @GetMapping("/{id}")
@@ -38,6 +37,9 @@ class LetterController(
         @AuthenticationPrincipal principal: Jwt,
         request: SendLetterRequest
     ): ApiResponse<Unit> {
+        val id = principal.getClaimAsString("id").toLong()
+        val command = SendLetterCommand.of(id, request.recipientCode, request.content, request.title, request.artist)
+        sendLetterUseCase.sendLetter(command)
         return ApiResponse.success(Unit)
     }
 

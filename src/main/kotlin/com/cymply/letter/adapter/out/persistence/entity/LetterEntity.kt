@@ -17,5 +17,5 @@ class LetterEntity(
     val recipientId: Long,
     val senderId: Long,
     val musicId: Long,
-    val readAt: LocalDateTime
+    val readAt: LocalDateTime? = null
 ) : BaseTimeEntity()
