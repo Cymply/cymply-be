@@ -32,7 +32,6 @@ class LetterController(
         return ApiResponse.success(listOf(SenderGroupedLettersResponse(1L, "", emptyList())))
     }
 
-    @PostMapping
     override fun sendLetter(
         @AuthenticationPrincipal principal: Jwt,
         request: SendLetterRequest

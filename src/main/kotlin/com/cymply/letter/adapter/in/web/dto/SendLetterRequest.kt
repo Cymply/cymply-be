@@ -10,12 +10,9 @@ data class SendLetterRequest(
     @Schema(description = "편지 내용", example = "안녕 테스터!")
     val content: String,
 
-    @field:Schema(description = "음악 제목", example = "좋은 날")
+    @field:Schema(description = "음악 제목, 음악 검색에서 반환된 값", example = "좋은 날")
     val title: String,
 
-    @field:Schema(description = "음악 아티스트", example = "IU")
-    val artist: String,
-
-    @field:Schema(description = "음악 썸네일 url", example = "www.example.com")
-    val thumbnail: String?
+    @field:Schema(description = "음악 아티스트, 음악 검색에서 반환된 값", example = "IU")
+    val artist: String
 )
