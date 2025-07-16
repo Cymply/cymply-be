@@ -1,4 +1,4 @@
-package com.cymply.user.adapter.out.persistence
+package com.cymply.user.adapter.out.persistence.mapper
 
 import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.adapter.out.persistence.entity.UserEntity

@@ -1,4 +1,4 @@
-package com.cymply.letter.adapter.out.persistence
+package com.cymply.letter.adapter.out.persistence.mapper
 
 import com.cymply.letter.adapter.out.persistence.entity.LetterEntity
 import com.cymply.letter.domain.Letter

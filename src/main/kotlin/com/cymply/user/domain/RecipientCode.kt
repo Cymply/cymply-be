@@ -1,19 +1,19 @@
-package com.cymply.letter.domain
+package com.cymply.user.domain
 
 import java.time.LocalDateTime
 
-class LetterCode(
+class RecipientCode(
     val id: Long? = null,
-    val recipientId: Long,
     val code: String,
+    val recipientId: Long,
     val createdAt: LocalDateTime,
     val expiredAt: LocalDateTime? = null,
 ) {
     companion object {
-        fun of(recipientId: Long, code: String): LetterCode {
-            return LetterCode(
-                recipientId = recipientId,
+        fun of(code: String, recipientId: Long): RecipientCode {
+            return RecipientCode(
                 code = code,
+                recipientId = recipientId,
                 createdAt = LocalDateTime.now()
             )
         }

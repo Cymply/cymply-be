@@ -4,9 +4,15 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 @Schema(description = "편지 전송 요청 DTO")
 data class SendLetterRequest(
-    @Schema(description = "송신자 ID", example = "1000")
-    val receipt: Long,
+    @Schema(description = "수신자 코드", example = "1000")
+    val recipientCode: String,
 
     @Schema(description = "편지 내용", example = "안녕 테스터!")
-    val content: String
+    val content: String,
+
+    @field:Schema(description = "음악 제목, 음악 검색에서 반환된 값", example = "좋은 날")
+    val title: String,
+
+    @field:Schema(description = "음악 아티스트, 음악 검색에서 반환된 값", example = "IU")
+    val artist: String
 )

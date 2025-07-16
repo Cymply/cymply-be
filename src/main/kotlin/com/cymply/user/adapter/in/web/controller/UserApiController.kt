@@ -1,5 +1,6 @@
 package com.cymply.user.adapter.`in`.web.controller
 
+import com.cymply.user.adapter.`in`.web.dto.RecipientCodeResponse
 import com.cymply.user.adapter.`in`.web.dto.SignupRequest
 import com.cymply.user.adapter.`in`.web.dto.UserResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -26,6 +27,7 @@ interface UserApiController {
         @AuthenticationPrincipal principal: Jwt,
     ): com.cymply.common.response.ApiResponse<UserResponse>
 
+
     @Operation(summary = "닉네임 중복 검사", description = "사용 가능한 닉네임을 검사합니다.")
     @ApiResponses(
         value = [
@@ -39,6 +41,7 @@ interface UserApiController {
         @PathVariable nickname: String
     ): com.cymply.common.response.ApiResponse<String?>
 
+
     @Operation(summary = "회원가입", description = "OAuth2 회원가입 및 회원의 추가 정보 저장합니다.")
     @ApiResponses(
         value = [
@@ -51,4 +54,34 @@ interface UserApiController {
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody request: SignupRequest
     ): com.cymply.common.response.ApiResponse<String?>
+
+
+    /**
+     * letter-code
+     */
+    @Operation(summary = "수신자 코드 생성", description = "")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "201", description = "성공"),
+            ApiResponse(responseCode = "404", description = "오류가 발생했습니다.")
+        ]
+    )
+    @PostMapping("/me/recipient-code")
+    fun createRecipientCode(
+        @AuthenticationPrincipal principal: Jwt
+    ): com.cymply.common.response.ApiResponse<RecipientCodeResponse?>
+
+
+    @Operation(summary = "수신자 정보 조회", description = "수신자 코드를 통해 수신자를 식별합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "404", description = "유효하지 않은 코드입니다.")
+        ]
+    )
+    @GetMapping("/recipient-code/{code}")
+    fun getRecipient(
+        @AuthenticationPrincipal principal: Jwt,
+        @PathVariable code: String
+    ): com.cymply.common.response.ApiResponse<UserResponse?>
 }

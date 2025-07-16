@@ -1,5 +1,8 @@
 package com.cymply.user.adapter.out.persistence
 
+import com.cymply.user.adapter.out.persistence.mapper.UserEntityMapper
+import com.cymply.user.adapter.out.persistence.repository.OAuth2UserJpaRepository
+import com.cymply.user.adapter.out.persistence.repository.UserJpaRepository
 import com.cymply.user.application.port.out.LoadUserPort
 import com.cymply.user.application.port.out.SaveUserPort
 import com.cymply.user.domain.User

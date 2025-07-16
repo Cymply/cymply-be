@@ -1,13 +1,9 @@
 package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
-import com.cymply.letter.adapter.`in`.web.dto.LetterCodeResponse
-import com.cymply.letter.adapter.`in`.web.dto.LetterResponse
-import com.cymply.letter.adapter.`in`.web.dto.SendLetterRequest
-import com.cymply.letter.adapter.`in`.web.dto.SenderGroupedLettersResponse
-import com.cymply.letter.application.port.`in`.CreateLetterCodeUseCase
+import com.cymply.letter.adapter.`in`.web.dto.*
+import com.cymply.letter.application.port.`in`.*
 import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -16,7 +12,9 @@ import java.time.LocalDateTime
 @RestController
 @RequestMapping("/api/v1/letters")
 class LetterController(
-    private val createLetterCodeUseCase: CreateLetterCodeUseCase
+    private val setLetterNicknameUseCase: SetLetterNicknameUseCase,
+    private val getLetterNicknameUseCase: GetLetterNicknameUseCase,
+    private val sendLetterUseCase: SendLetterUseCase,
 ) : LetterApiController {
 
     @GetMapping("/{id}")
@@ -34,28 +32,35 @@ class LetterController(
         return ApiResponse.success(listOf(SenderGroupedLettersResponse(1L, "", emptyList())))
     }
 
-    @PostMapping("/code")
-    override fun createLetterCode(
-        @AuthenticationPrincipal principal: Jwt,
-    ): ApiResponse<LetterCodeResponse?> {
-        val id = principal.getClaimAsString("id").toLong()
-
-        /**
-         * TODO
-         * 편지 작성 폼 URL 사용 시 재조정 필요
-         */
-        val result = createLetterCodeUseCase.createLetterCode(id)
-        val response = LetterCodeResponse(result, "https://www.cymply.kr/letter?code=${result}")
-        return ApiResponse.success(response)
-    }
-
-
-    @PostMapping
     override fun sendLetter(
         @AuthenticationPrincipal principal: Jwt,
         request: SendLetterRequest
     ): ApiResponse<Unit> {
+        val id = principal.getClaimAsString("id").toLong()
+        val command = SendLetterCommand.of(id, request.recipientCode, request.content, request.title, request.artist)
+        sendLetterUseCase.sendLetter(command)
         return ApiResponse.success(Unit)
+    }
+
+
+    override fun setLetterNickname(
+        @AuthenticationPrincipal principal: Jwt,
+        @RequestBody request: SetLetterNicknameRequest
+    ): ApiResponse<Unit> {
+        val id = principal.getClaimAsString("id").toLong()
+        val command = SetLetterNicknameCommand(id, request.recipientCode, request.nickname)
+        setLetterNicknameUseCase.setLetterNickname(command)
+        return ApiResponse.success(Unit)
+    }
+
+    override fun getLetterNickname(
+        @AuthenticationPrincipal principal: Jwt,
+        @RequestParam recipientCode: String,
+    ): ApiResponse<LetterNicknameResponse> {
+        val id = principal.getClaimAsString("id").toLong()
+        val info = getLetterNicknameUseCase.getLetterNickname(id, recipientCode)
+        val response = LetterNicknameResponse.from(info)
+        return ApiResponse.success(response)
     }
 
 
