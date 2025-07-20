@@ -22,13 +22,17 @@ class RegisterUserService(
         val exist = loadUserPort.loadUserBySubAndProvider(command.sub, provider)
 
         if (exist == null || exist.isDeletedUser()) {
+            val profile = UserProfile(
+                command.gender,
+                command.ageRange?.let { UserProfile.AgeRange.from(it) }
+            )
             val user = OAuth2User.of(
                 sub = command.sub,
                 provider = provider,
                 role = User.Role.USER,
                 email = command.email,
                 nickname = command.nickname,
-                profile = UserProfile(command.name, command.gender, command.birth)
+                profile = profile
             )
             return saveUserPort.saveUser(user)
         }
