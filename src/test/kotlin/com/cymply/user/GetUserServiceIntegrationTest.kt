@@ -6,6 +6,7 @@ import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.adapter.out.persistence.entity.UserEntityProfile
 import com.cymply.user.application.port.`in`.GetUserUseCase
 import com.cymply.user.domain.User
+import com.cymply.user.domain.UserProfile
 import com.cymply.user.domain.UserProvider
 import jakarta.transaction.Transactional
 import org.assertj.core.api.Assertions
@@ -13,17 +14,16 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDate
 import java.util.*
 
 @SpringBootTest
 @Transactional
 class GetUserServiceIntegrationTest {
     @Autowired
-    lateinit var getUserUserCase: GetUserUseCase
+    lateinit var usecase: GetUserUseCase
 
     @Autowired
-    lateinit var userRepository: UserJpaRepository
+    lateinit var repository: UserJpaRepository
 
     @BeforeEach
     fun init() {
@@ -34,12 +34,11 @@ class GetUserServiceIntegrationTest {
             email = "gildonghong@cymply.com",
             nickname = "Gildonghong",
             profile = UserEntityProfile(
-                name = "Gildonghong",
                 gender = Gender.M,
-                birth = LocalDate.now()
+                ageRange = UserProfile.AgeRange.AGE_20_24
             )
         )
-        userRepository.save(entity)
+        repository.save(entity)
     }
 
     @Test
@@ -48,7 +47,7 @@ class GetUserServiceIntegrationTest {
         val id = 1L
 
         // when
-        val user = getUserUserCase.getActiveUserOrElseThrow(id)
+        val user = usecase.getActiveUserOrElseThrow(id)
 
         // then
         Assertions.assertThat(user).isNotNull
