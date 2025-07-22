@@ -63,7 +63,7 @@ interface AuthApiController {
             ApiResponse(responseCode = "401", description = "Unauthorized, Refresh Token이 만료되었거나 유효하지 않습니다."),
         ]
     )
-    @PostMapping("/api/v1/logout")
+    @PostMapping("/api/v1/auth/logout")
     fun logout(
         @RequestBody request: RefreshTokenRequest
     ): com.cymply.common.response.ApiResponse<Unit>
