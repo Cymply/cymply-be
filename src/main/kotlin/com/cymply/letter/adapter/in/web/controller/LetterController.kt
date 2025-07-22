@@ -2,8 +2,9 @@ package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.*
+import com.cymply.letter.application.dto.SendLetterCommand
+import com.cymply.letter.application.dto.SetLetterNicknameCommand
 import com.cymply.letter.application.port.`in`.*
-import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
