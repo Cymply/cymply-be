@@ -1,6 +1,7 @@
 package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.letter.adapter.`in`.web.dto.*
+import com.cymply.letter.adapter.`in`.web.dto.LetterCountResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
@@ -16,9 +17,7 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Letter", description = "편지 관련 API")
 @RequestMapping("/api/v1/letters")
 interface LetterApiController {
-    /**
-     * letter
-     */
+
     @Operation(summary = "편지 단건 조회", description = "편지 ID로 편지를 상세 조회합니다.")
     @ApiResponses(
         value = [
@@ -31,12 +30,13 @@ interface LetterApiController {
     )
     @GetMapping("/{id}")
     fun getLetter(
+        @AuthenticationPrincipal principal: Jwt,
         @Parameter(
             description = "조회하려는 편지의 ID",
             example = "1000",
             `in` = ParameterIn.PATH,
         )
-        @PathVariable id: Long
+        @PathVariable id: Long,
     ): com.cymply.common.response.ApiResponse<LetterResponse>
 
 
@@ -52,7 +52,8 @@ interface LetterApiController {
     )
     @GetMapping("/received/grouped")
     fun getGroupedReceivedLetters(
-    ): com.cymply.common.response.ApiResponse<List<SenderGroupedLettersResponse>>
+        @AuthenticationPrincipal principal: Jwt,
+    ): com.cymply.common.response.ApiResponse<List<GetReceivedLetterGroupResponse>>
 
     @Operation(summary = "편지 전송", description = "특정 사용자에게 편지를 보냅니다.")
     @ApiResponses(
@@ -106,4 +107,16 @@ interface LetterApiController {
         @AuthenticationPrincipal principal: Jwt,
         @RequestParam recipientCode: String,
     ): com.cymply.common.response.ApiResponse<LetterNicknameResponse>
+
+    @Operation(summary = "사용자 편지 개수 조회", description = "사용자가 주고 받은 편지의 개수를 조회합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "400", description = "사용자를 찾을 수 없습니다.")
+        ]
+    )
+    @GetMapping("/count")
+    fun getLettersCount(
+        @AuthenticationPrincipal principal: Jwt,
+    ): com.cymply.common.response.ApiResponse<LetterCountResponse>
 }

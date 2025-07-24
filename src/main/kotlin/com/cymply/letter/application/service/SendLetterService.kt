@@ -1,6 +1,6 @@
 package com.cymply.letter.application.service
 
-import com.cymply.letter.application.port.`in`.SendLetterCommand
+import com.cymply.letter.application.dto.SendLetterCommand
 import com.cymply.letter.application.port.`in`.SendLetterUseCase
 import com.cymply.letter.application.port.out.SaveLetterPort
 import com.cymply.letter.domain.Letter

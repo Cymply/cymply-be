@@ -1,7 +1,7 @@
 package com.cymply.letter.application.service
 
 import com.cymply.user.application.port.`in`.GetRecipientUseCase
-import com.cymply.letter.application.port.`in`.SetLetterNicknameCommand
+import com.cymply.letter.application.dto.SetLetterNicknameCommand
 import com.cymply.letter.application.port.`in`.SetLetterNicknameUseCase
 import com.cymply.letter.application.port.out.LoadLetterNicknamePort
 import com.cymply.letter.application.port.out.SaveLetterNicknamePort

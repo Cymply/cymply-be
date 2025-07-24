@@ -1,4 +1,4 @@
-package com.cymply.letter.application.port.`in`
+package com.cymply.letter.application.dto
 
 import com.cymply.letter.domain.LetterNickname
 import java.time.LocalDateTime

@@ -1,7 +1,7 @@
 package com.cymply.letter.application.service
 
 import com.cymply.letter.application.port.`in`.GetLetterNicknameUseCase
-import com.cymply.letter.application.port.`in`.LetterNicknameInfo
+import com.cymply.letter.application.dto.LetterNicknameInfo
 import com.cymply.user.application.port.`in`.GetRecipientUseCase
 import com.cymply.letter.application.port.out.LoadLetterNicknamePort
 import org.springframework.stereotype.Service

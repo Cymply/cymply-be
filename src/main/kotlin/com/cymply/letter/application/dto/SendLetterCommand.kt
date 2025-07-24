@@ -1,4 +1,4 @@
-package com.cymply.letter.application.port.`in`
+package com.cymply.letter.application.dto
 
 data class SendLetterCommand(
     val senderId: Long,

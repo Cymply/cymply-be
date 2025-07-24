@@ -1,7 +1,7 @@
 package com.cymply.letter
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils
-import com.cymply.letter.application.port.`in`.SendLetterCommand
+import com.cymply.letter.application.dto.SendLetterCommand
 import com.cymply.letter.application.service.SendLetterService
 import com.cymply.user.adapter.out.persistence.entity.OAuth2UserEntity
 import com.cymply.user.adapter.out.persistence.entity.RecipientCodeEntity
