@@ -1,5 +1,6 @@
 package com.cymply.auth.adapter.`in`.web
 
+import com.cymply.auth.adapter.`in`.dto.RefreshTokenRequest
 import com.cymply.auth.adapter.`in`.dto.TokenResponse
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -19,18 +20,9 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Auth", description = "인증 관련 API")
 @RestController
 interface AuthApiController {
-    @Operation(summary = "Access Token 재발급", description = "만료된 Access Token 재발급을 실행합니다.")
-    @ApiResponses(
-        value = [
-            ApiResponse(responseCode = "200", description = "성공"),
-            ApiResponse(responseCode = "401", description = "Unauthorized, Refresh Token이 만료되었거나 유효하지 않습니다."),
-        ]
-    )
-    @PostMapping("/api/v1/auth/token/refresh")
-    fun refreshAccessToken(
-        @RequestBody refreshToken: String
-    ): com.cymply.common.response.ApiResponse<TokenResponse>
-
+    /**
+     * Spring Security
+     */
     @Operation(summary = "OAuth2 로그인", description = "OAuth2 소셜 로그인을 실행합니다.")
     @ApiResponses(
         value = [
@@ -49,6 +41,33 @@ interface AuthApiController {
         )
         @PathVariable provider: String
     )
+
+
+    @Operation(summary = "Access Token 재발급", description = "만료된 Access Token 재발급을 실행합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "401", description = "Unauthorized, Refresh Token이 만료되었거나 유효하지 않습니다."),
+        ]
+    )
+    @PostMapping("/api/v1/auth/token/refresh")
+    fun refreshAccessToken(
+        @RequestBody request: RefreshTokenRequest
+    ): com.cymply.common.response.ApiResponse<TokenResponse>
+
+
+    @Operation(summary = "로그아웃", description = "Refresh Token을 만료시킵니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "401", description = "Unauthorized, Refresh Token이 만료되었거나 유효하지 않습니다."),
+        ]
+    )
+    @PostMapping("/api/v1/auth/logout")
+    fun logout(
+        @RequestBody request: RefreshTokenRequest
+    ): com.cymply.common.response.ApiResponse<Unit>
+
 
     @Operation(summary = "회원가입 정상 토큰 재발급", description = "회원가입 완료 후 정상 토큰 발급을 실행합니다.")
     @ApiResponses(

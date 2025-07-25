@@ -1,7 +1,7 @@
 package com.cymply.auth
 
 import com.cymply.auth.adapter.out.redis.RefreshTokenRedisAdapter
-import com.cymply.auth.application.service.RefreshTokenService
+import com.cymply.auth.application.service.ExpireTokenService
 import com.cymply.auth.domain.AuthenticatedPrincipal
 import com.cymply.common.util.JwtUtils
 import com.cymply.user.adapter.out.persistence.repository.OAuth2UserJpaRepository
@@ -17,10 +17,13 @@ import java.util.UUID
 
 
 @SpringBootTest
-class RefreshTokenIntegrationTest {
+class ExpireTokenIntegrationTest {
 
     @Autowired
-    lateinit var refreshTokenService: RefreshTokenService
+    private lateinit var expireTokenService: ExpireTokenService
+
+    @Autowired
+    lateinit var service: ExpireTokenService
 
     @Autowired
     lateinit var jwtUtils: JwtUtils
@@ -33,7 +36,7 @@ class RefreshTokenIntegrationTest {
 
     @Test
     @Transactional
-    fun `유효한 RefreshToken은 성공적으로 요청을 처리한다`() {
+    fun `RefreshToken이 유효한 경우 해당 값을 삭제한다`() {
         // given
         val user = OAuth2UserEntity(
             id = null,
@@ -44,17 +47,19 @@ class RefreshTokenIntegrationTest {
             UUID.randomUUID().toString(),
             UserProvider.GOOGLE,
         )
+
         userJpaRepository.save(user)
 
         val principal = AuthenticatedPrincipal.of(user.id!!, user.email, user.nickname, user.role.name)
         val refreshToken = jwtUtils.generate(principal.getAttributes(), 10000)
+
         refreshTokenAdapter.saveRefreshToken(jwtUtils.getId(refreshToken), refreshToken, 10000)
 
         // when
-        val result = refreshTokenService.refreshToken(refreshToken)
+        expireTokenService.expireToken(refreshToken)
 
         // then
-        Assertions.assertThat(result.accessToken).isNotNull()
-        Assertions.assertThat(result.refreshToken).isNotNull()
+        val exist = refreshTokenAdapter.loadRefreshToken(jwtUtils.getId(refreshToken))
+        Assertions.assertThat(exist).isNull()
     }
 }
