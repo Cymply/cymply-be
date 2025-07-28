@@ -1,6 +1,8 @@
 package com.cymply.auth.adapter.`in`.web
 
+import com.cymply.auth.adapter.`in`.dto.RefreshTokenRequest
 import com.cymply.auth.adapter.`in`.dto.TokenResponse
+import com.cymply.auth.application.port.`in`.ExpireTokenUseCase
 import com.cymply.auth.application.port.`in`.RefreshTokenUseCase
 import com.cymply.auth.application.port.`in`.ReissueTokenCommand
 import com.cymply.auth.application.port.`in`.ReissueTokenUseCase
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val reissueTokenUseCase: ReissueTokenUseCase,
     private val refreshTokenUseCase: RefreshTokenUseCase,
+    private val expireTokenUseCase: ExpireTokenUseCase
 ) : AuthApiController {
     override fun oAuth2Login(
         provider: String
@@ -36,10 +39,17 @@ class AuthController(
     }
 
     override fun refreshAccessToken(
-        @RequestBody refreshToken: String
+        @RequestBody request: RefreshTokenRequest
     ): ApiResponse<TokenResponse> {
-        val result = refreshTokenUseCase.refreshToken(refreshToken)
+        val result = refreshTokenUseCase.refreshToken(request.refreshToken)
         val response = TokenResponse(result.accessToken, result.expiresIn, result.refreshToken)
         return ApiResponse.success(content = response)
+    }
+
+    override fun logout(
+        @RequestBody request: RefreshTokenRequest
+    ): ApiResponse<Unit> {
+        expireTokenUseCase.expireToken(request.refreshToken)
+        return ApiResponse.success(content = Unit)
     }
 }
