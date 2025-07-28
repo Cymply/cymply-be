@@ -6,13 +6,14 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import java.time.LocalDate
 import java.util.*
 
 @SpringBootTest
 class RegisterUserServiceIntegrationTest {
+
     @Autowired
     lateinit var service: RegisterUserService
+
     @Test
     fun `회원 가입 테스트`() {
         // given
@@ -20,9 +21,8 @@ class RegisterUserServiceIntegrationTest {
             provider = "GOOGLE",
             sub = UUID.randomUUID().toString(),
             email = "test@test.com",
-            name = "test",
             nickname = "test",
-            birth = LocalDate.of(2025, 6, 1)
+            ageRange = "AGE_20_24"
         )
         // when
         val result = service.registerOAuth2User(command)

@@ -22,8 +22,8 @@ data class LetterSummaryResponse(
     val letterId: Long,
 
     @field:Schema(description = "편지 요약 내용", example = "안녕 테스터!")
-    val content: String,
+    val title: String,
 
-    @field:Schema(description = "음악 ID", example = "1000")
-    val musicId: Long
+    @field:Schema(implementation = MusicResponse::class)
+    val music: MusicResponse
 )
