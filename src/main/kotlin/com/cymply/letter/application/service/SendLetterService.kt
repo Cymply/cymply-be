@@ -16,11 +16,12 @@ class SendLetterService(
     val saveLetterPort: SaveLetterPort
 ) : SendLetterUseCase {
     override fun sendLetter(command: SendLetterCommand): Long {
-        val query = PlayMusicQuery(command.title, command.artist)
+        val recipient = getRecipientUseCase.getRecipient(command.recipientCode)
+
+        val query = PlayMusicQuery(command.musicTitle, command.musicArtist)
         val music = getMusicOrCreateUseCase.findMusicOrCreate(query)
 
-        val recipient = getRecipientUseCase.getRecipient(command.recipientCode)
-        val letter = Letter.of(command.content, music.id, recipient.id, command.senderId)
+        val letter = Letter.of(command.title, command.content, music.id, recipient.id, command.senderId)
         return saveLetterPort.save(letter)
     }
 }
