@@ -2,12 +2,13 @@ package com.cymply.letter.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
 import com.cymply.letter.adapter.`in`.web.dto.*
+import com.cymply.letter.application.dto.GetLetterQuery
+import com.cymply.letter.application.dto.SendLetterCommand
+import com.cymply.letter.application.dto.SetLetterNicknameCommand
 import com.cymply.letter.application.port.`in`.*
-import com.cymply.music.adapter.`in`.web.dto.SearchMusicResponse
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/v1/letters")
@@ -15,21 +16,27 @@ class LetterController(
     private val setLetterNicknameUseCase: SetLetterNicknameUseCase,
     private val getLetterNicknameUseCase: GetLetterNicknameUseCase,
     private val sendLetterUseCase: SendLetterUseCase,
+    private val getLetterUseCase: GetLetterUseCase,
 ) : LetterApiController {
 
     @GetMapping("/{id}")
     override fun getLetter(
+        @AuthenticationPrincipal principal: Jwt,
         @PathVariable id: Long
     ): ApiResponse<LetterResponse> {
-        val content = LetterResponse(1L, "", "", LocalDateTime.now(), SearchMusicResponse("", "", ""))
-        return ApiResponse.success(content = content)
+        val userId = principal.getClaimAsString("id").toLong()
+        val query = GetLetterQuery.of(userId, id)
+        val result = getLetterUseCase.getLetter(query)
+        return ApiResponse.success(LetterResponse.from(result))
     }
 
     @GetMapping("/received/grouped")
     override fun getGroupedReceivedLetters(
-//        @RequestParam request: GetLettersRequest
-    ): ApiResponse<List<SenderGroupedLettersResponse>> {
-        return ApiResponse.success(listOf(SenderGroupedLettersResponse(1L, "", emptyList())))
+        @AuthenticationPrincipal principal: Jwt,
+    ): ApiResponse<List<GetReceivedLetterGroupResponse>> {
+        val userId = principal.getClaimAsString("id").toLong()
+        val result = getLetterUseCase.getLetters(userId)
+        return ApiResponse.success(GetReceivedLetterGroupResponse.from(result))
     }
 
     override fun sendLetter(
@@ -60,6 +67,15 @@ class LetterController(
         val id = principal.getClaimAsString("id").toLong()
         val info = getLetterNicknameUseCase.getLetterNickname(id, recipientCode)
         val response = LetterNicknameResponse.from(info)
+        return ApiResponse.success(response)
+    }
+
+    override fun getLettersCount(
+        @AuthenticationPrincipal principal: Jwt,
+    ): ApiResponse<LetterCountResponse> {
+        val id = principal.getClaimAsString("id").toLong()
+        val result = getLetterUseCase.getCounts(id)
+        val response = LetterCountResponse(receivedCount = result.receivedCount, sentCount = result.sentCount)
         return ApiResponse.success(response)
     }
 

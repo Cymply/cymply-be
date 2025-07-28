@@ -1,6 +1,6 @@
 package com.cymply.letter.adapter.`in`.web.dto
 
-import com.cymply.letter.application.port.`in`.LetterNicknameInfo
+import com.cymply.letter.application.dto.LetterNicknameInfo
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
