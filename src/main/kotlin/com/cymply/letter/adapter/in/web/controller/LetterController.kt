@@ -37,7 +37,14 @@ class LetterController(
         request: SendLetterRequest
     ): ApiResponse<Unit> {
         val id = principal.getClaimAsString("id").toLong()
-        val command = SendLetterCommand.of(id, request.recipientCode, request.content, request.title, request.artist)
+        val command = SendLetterCommand.of(
+            senderId = id,
+            recipientCode = request.recipientCode,
+            title = request.title,
+            content = request.content,
+            musicTitle = request.musicTitle,
+            musicArtist = request.musicArtist,
+        )
         sendLetterUseCase.sendLetter(command)
         return ApiResponse.success(Unit)
     }

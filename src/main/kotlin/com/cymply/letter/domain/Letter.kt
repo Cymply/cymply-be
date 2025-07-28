@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 
 class Letter(
     val id: Long? = null,
+    val title: String,
     val content: String,
     val musicId: Long,
     val recipientId: Long,  // 수신자 아이디
@@ -13,8 +14,15 @@ class Letter(
     var deletedAt: LocalDateTime? = null,
 ) {
     companion object {
-        fun of(content: String, musicId: Long, recipientId: Long, senderId: Long): Letter {
+        fun of(
+            title: String,
+            content: String,
+            musicId: Long,
+            recipientId: Long,
+            senderId: Long
+        ): Letter {
             return Letter(
+                title = title,
                 content = content,
                 musicId = musicId,
                 recipientId = recipientId,
@@ -39,3 +47,4 @@ class Letter(
         return readAt != null
     }
 }
+
