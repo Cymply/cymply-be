@@ -12,6 +12,9 @@ data class LetterResponse(
     @field:Schema(description = "발신자 ID", example = "1000")
     val senderId: Long,
 
+    @field:Schema(description = "편지 제목", example = "편지 제목입니다.")
+    val title: String,
+
     @field:Schema(description = "편지 내용", example = "안녕 테스터!")
     val content: String,
 
@@ -26,8 +29,8 @@ data class LetterResponse(
             LetterResponse(
                 id = result.id,
                 senderId = result.senderId,
+                title = result.title,
                 content = result.content,
-//                sentAt =
                 music = MusicResponse(
                     title = result.musicTitle,
                     artist = result.musicArtist,

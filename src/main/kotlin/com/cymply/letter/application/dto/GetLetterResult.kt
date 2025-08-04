@@ -6,7 +6,7 @@ import com.cymply.music.application.port.dto.GetMusicResult
 data class GetLetterResult(
     val id: Long,
     val senderId: Long,
-//    val title: String,
+    val title: String,
     val content: String,
     val musicTitle: String,
     val musicArtist: String,
@@ -18,7 +18,7 @@ data class GetLetterResult(
             GetLetterResult(
                 id = letter.id!!,
                 senderId = letter.senderId,
-//                title = letter.title,
+                title = letter.title,
                 content = letter.content,
                 musicTitle = music.title,
                 musicArtist = music.artist,
