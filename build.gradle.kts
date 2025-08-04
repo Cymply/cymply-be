@@ -63,7 +63,7 @@ dependencies {
     implementation("com.google.http-client:google-http-client-jackson2:1.39.2")
 
     runtimeOnly("com.h2database:h2")
-//    runtimeOnly("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
