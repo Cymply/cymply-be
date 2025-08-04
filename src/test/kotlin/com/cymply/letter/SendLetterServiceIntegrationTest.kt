@@ -9,7 +9,7 @@ import com.cymply.user.domain.User
 import com.cymply.user.domain.UserProvider
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -54,13 +54,20 @@ class SendLetterServiceIntegrationTest {
         )
         em.persist(sender)
 
-        val command = SendLetterCommand(sender.id!!, code.code, "Hello World!", "Hello", "Adele")
+        val command = SendLetterCommand(
+            sender.id!!,
+            code.code,
+            "Hello World!",
+            "Hello World! This is content",
+            "Hello",
+            "Adele"
+        )
 
         // when
         val result = service.sendLetter(command)
 
         // then
-        Assertions.assertThat(result).isNotNull
-        Assertions.assertThat(result).isGreaterThan(0)
+        assertThat(result).isNotNull
+        assertThat(result).isGreaterThan(0)
     }
 }
