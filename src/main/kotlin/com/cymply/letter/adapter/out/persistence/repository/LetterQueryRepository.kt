@@ -28,6 +28,7 @@ class LetterQueryRepository(
                     qMusic.artist,
                     qMusic.thumbnail,
                     qMusic.videoUrl,
+                    qLetter.title,
                     qLetter.content,
                     qLetter.createdAt
                 )

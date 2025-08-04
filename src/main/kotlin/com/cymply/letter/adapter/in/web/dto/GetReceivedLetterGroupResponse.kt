@@ -1,11 +1,19 @@
 package com.cymply.letter.adapter.`in`.web.dto
 
 import com.cymply.letter.application.dto.LetterSummary
+import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
+@Schema(description = "발신자 별 편지 목록 DTO")
 data class GetReceivedLetterGroupResponse(
+
+    @field:Schema(description = "편지 ID", example = "1000")
     val senderId: Long,
+
+    @field:Schema(description = "발신자 이름", example = "홍길동")
     val senderName: String,
+
+    @field:Schema(description = "편지 목록", implementation = ReceivedLetterDetailResponse::class)
     val letters: List<ReceivedLetterDetailResponse>
 ) {
     companion object {
@@ -25,6 +33,7 @@ data class GetReceivedLetterGroupResponse(
                                 musicThumbnailUrl = it.musicThumbnailUrl,
                                 videoUrl = it.videoUrl,
                                 content = it.content,
+                                title = it.title,
                                 sentAt = it.sentAt
                             )
                         }
@@ -34,12 +43,30 @@ data class GetReceivedLetterGroupResponse(
     }
 }
 
+@Schema(description = "발신자 별 편지 목록 DTO")
 data class ReceivedLetterDetailResponse(
+
+    @field:Schema(description = "편지 ID", example = "1000")
     val letterId: Long,
+
+    @field:Schema(description = "음악 제목", example = "좋은 날")
     val musicTitle: String,
+
+    @field:Schema(description = "음악 아티스트", example = "아이유")
     val musicArtist: String,
+
+    @field:Schema(description = "음악 썸네일 URL", example = "http://example.com")
     val musicThumbnailUrl: String,
+
+    @field:Schema(description = "음악 재생 URL", example = "http://example.com")
     val videoUrl: String,
+
+    @field:Schema(description = "편지 제목", example = "편지 제목입니다.")
+    val title: String,
+
+    @field:Schema(description = "편지 내용", example = "안녕 친구야")
     val content: String,
+
+    @field:Schema(description = "편지 전송 시각", example = "2025-07-09 00:00:00")
     val sentAt: LocalDateTime
 )

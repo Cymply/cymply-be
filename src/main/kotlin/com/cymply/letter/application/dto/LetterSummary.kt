@@ -10,6 +10,7 @@ data class LetterSummary(
     val musicArtist: String,
     val musicThumbnailUrl: String,
     val videoUrl: String,
+    val title: String,
     val content: String,
     val sentAt: LocalDateTime
 )
