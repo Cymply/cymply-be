@@ -6,7 +6,7 @@ spring:
 
   app:
     host: http://34.64.182.180:8080
-    client: http://localhost:3000
+    client: http://www.cymply.kr
 
   h2:
     console:
