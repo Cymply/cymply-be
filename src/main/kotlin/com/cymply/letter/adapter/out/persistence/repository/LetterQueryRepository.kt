@@ -30,7 +30,8 @@ class LetterQueryRepository(
                     qMusic.videoUrl,
                     qLetter.title,
                     qLetter.content,
-                    qLetter.createdAt
+                    qLetter.createdAt,
+                    qLetter.readAt
                 )
             )
             .from(qLetter)

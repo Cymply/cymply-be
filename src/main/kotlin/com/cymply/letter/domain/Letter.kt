@@ -46,5 +46,9 @@ class Letter(
     fun isRead(): Boolean {
         return readAt != null
     }
+
+    fun read() {
+        readAt = LocalDateTime.now()
+    }
 }
 
