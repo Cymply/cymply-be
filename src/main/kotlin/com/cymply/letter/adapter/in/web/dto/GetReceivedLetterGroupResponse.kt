@@ -1,6 +1,7 @@
 package com.cymply.letter.adapter.`in`.web.dto
 
 import com.cymply.letter.application.dto.LetterSummary
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDateTime
 
@@ -13,7 +14,10 @@ data class GetReceivedLetterGroupResponse(
     @field:Schema(description = "발신자 이름", example = "홍길동")
     val senderName: String,
 
-    @field:Schema(description = "편지 목록", implementation = ReceivedLetterDetailResponse::class)
+    @field:ArraySchema(
+        arraySchema = Schema(description = "편지 목록"),
+        schema      = Schema(implementation = ReceivedLetterDetailResponse::class)
+    )
     val letters: List<ReceivedLetterDetailResponse>
 ) {
     companion object {
@@ -34,7 +38,8 @@ data class GetReceivedLetterGroupResponse(
                                 videoUrl = it.videoUrl,
                                 content = it.content,
                                 title = it.title,
-                                sentAt = it.sentAt
+                                sentAt = it.sentAt,
+                                isRead = it.readAt != null
                             )
                         }
                     )
@@ -68,5 +73,8 @@ data class ReceivedLetterDetailResponse(
     val content: String,
 
     @field:Schema(description = "편지 전송 시각", example = "2025-07-09 00:00:00")
-    val sentAt: LocalDateTime
+    val sentAt: LocalDateTime,
+
+    @field:Schema(description = "편지 읽음 여부", example = "true")
+    val isRead: Boolean
 )

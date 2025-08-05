@@ -12,5 +12,6 @@ data class LetterSummary(
     val videoUrl: String,
     val title: String,
     val content: String,
-    val sentAt: LocalDateTime
+    val sentAt: LocalDateTime,
+    val readAt: LocalDateTime? = null,
 )
