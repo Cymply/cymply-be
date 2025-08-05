@@ -52,7 +52,6 @@ jobs:
           username: ${{ secrets.PROD_SSH_USER }}
           key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
           source: "docker-compose.yml"
-#          target: /home/ubuntu/cymply/
           target: /home/cymply/
 
       - name: Deploy via SSH with Docker Compose
