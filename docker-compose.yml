@@ -1,6 +1,7 @@
 services:
   cymply-be:
     image: cymply/cymply-be:latest
+    container_name: cymply-be
     restart: always
     ports:
       - 8080:8080
@@ -12,8 +13,31 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+
+  mysql:
+    image: mysql:8.0.42
+    container_name: cymply-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Seoul
+    ports:
+      - '3306:3306'
+    volumes:
+      - 'cymply_mysql_data:/var/lib/mysql'
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_unicode_ci",
+      "--default-time-zone=Asia/Seoul"
+    ]
+
+
   redis:
     image: redis:7.4.2-alpine
+    container_name: cymply-redis
     ports:
       - 6379:6379
     # redis 작동 상태 확인
@@ -22,3 +46,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
+
+
+volumes:
+  cymply_mysql_data:
