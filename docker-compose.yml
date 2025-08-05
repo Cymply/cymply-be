@@ -18,11 +18,9 @@ services:
     image: mysql:8.0.42
     container_name: cymply-mysql
     restart: always
+    env_file:
+      - cymply.env
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       TZ: Asia/Seoul
     ports:
       - '3306:3306'
