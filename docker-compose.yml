@@ -8,7 +8,7 @@ services:
     env_file:
       - cymply.env
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
     # mysql, redis 컨테이너 작동 후 생성
     depends_on:
       redis:
