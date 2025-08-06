@@ -35,7 +35,7 @@ spring:
       token-expire-policy:
         access: 360000 # 60 * 60 * 1000 => 1 hour
         refresh: 604800000 # 7 * 24 * 60 * 60 * 1000 => 7 days
-        temporal: 6000000 # 100 * 60 * 1000 => 100 minutes
+        temporal: 6000000 # 30 * 60 * 1000 => 30 minutes
 
     oauth2:
       client:

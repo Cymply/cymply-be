@@ -26,7 +26,7 @@ class SecurityConfigurer(
          */
         http.csrf { it.disable() }
             .headers { it.frameOptions { frame -> frame.sameOrigin() } }
-            .cors { CorsConfig().corsConfigurationSource() }
+            .cors { }   // CorsConfigurationSource 빈 사용
             .formLogin { it.disable() }
 
         http.authorizeHttpRequests { authz ->

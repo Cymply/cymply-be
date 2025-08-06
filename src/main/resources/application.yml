@@ -1,9 +1,8 @@
 spring:
   application:
     name: cymply
-
   profiles:
-    active: prod
+    default: local
 
 springdoc:
   swagger-ui:
