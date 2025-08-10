@@ -13,6 +13,8 @@ services:
     depends_on:
       redis:
         condition: service_healthy
+      mysql:
+        condition: service_healthy
 
   mysql:
     image: mysql:8.0.42
@@ -31,7 +33,11 @@ services:
       "--collation-server=utf8mb4_unicode_ci",
       "--default-time-zone=Asia/Seoul"
     ]
-
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   redis:
     image: redis:7.4.2-alpine
@@ -44,7 +50,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
-
 
 volumes:
   cymply_mysql_data:
