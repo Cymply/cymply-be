@@ -4,7 +4,7 @@ spring:
       on-profile: prod
 
   app:
-    host: http://54.180.35.200:8080
+    host: http://api.cymply.kr
     client: http://www.cymply.kr
 
   datasource:
