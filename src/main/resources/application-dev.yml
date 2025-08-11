@@ -34,7 +34,7 @@ spring:
         format_sql: true
         highlight_sql: true
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.H2Dialect
 
   security:
     jwt:
