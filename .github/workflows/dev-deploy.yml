@@ -1,4 +1,4 @@
-name: Deploy Cymply API
+name: Deploy Cymply API dev
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml"
+          source: "docker-compose-dev.yml"
           target: /home/ubuntu/cymply/
 
       - name: Deploy via SSH with Docker Compose
@@ -62,6 +62,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/cymply
+            
+            mv docker-compose-dev.yml docker-compose.yml
 
             # 도커 로그인
             echo "${{ secrets.DOCKER_PASSWORD }}" | sudo docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin

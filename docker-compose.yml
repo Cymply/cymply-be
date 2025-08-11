@@ -4,14 +4,15 @@ services:
     container_name: cymply-be
     restart: always
     ports:
-      - 8080:8080
+      - 80:8080
     env_file:
       - cymply.env
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    # mysql, redis 컨테이너 작동 후 생성
     depends_on:
       redis:
+        condition: service_healthy
+      mysql:
         condition: service_healthy
 
   mysql:
@@ -23,7 +24,7 @@ services:
     environment:
       TZ: Asia/Seoul
     ports:
-      - '3306:3306'
+      - 3306:3306
     volumes:
       - 'cymply_mysql_data:/var/lib/mysql'
     command: [
@@ -31,6 +32,11 @@ services:
       "--collation-server=utf8mb4_unicode_ci",
       "--default-time-zone=Asia/Seoul"
     ]
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 
   redis:
@@ -38,7 +44,6 @@ services:
     container_name: cymply-redis
     ports:
       - 6379:6379
-    # redis 작동 상태 확인
     healthcheck:
       test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
       interval: 5s
