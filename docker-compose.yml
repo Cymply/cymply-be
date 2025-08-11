@@ -38,7 +38,6 @@ services:
       timeout: 3s
       retries: 5
 
-
   redis:
     image: redis:7.4.2-alpine
     container_name: cymply-redis
@@ -49,7 +48,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 3
-
 
 volumes:
   cymply_mysql_data:

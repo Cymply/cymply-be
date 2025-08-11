@@ -13,5 +13,5 @@
 | CI/CD | Github Action |
 | ORM | JPA |
 | Document | Swagger |
-| etc | Spring Security |
+| etc | Spring Security | 
  
