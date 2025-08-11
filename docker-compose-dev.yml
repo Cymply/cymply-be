@@ -5,13 +5,14 @@ services:
     restart: always
     ports:
       - 8080:8080
-    platform: linux/amd64
+    env_file:
+      - cymply.env
     environment:
-      SPRING_PROFILES_ACTIVE: local
-    # mysql, redis 컨테이너 작동 후 생성
+      SPRING_PROFILES_ACTIVE: dev
     depends_on:
       redis:
         condition: service_healthy
+
   redis:
     image: redis:7.4.2-alpine
     container_name: cymply-redis
