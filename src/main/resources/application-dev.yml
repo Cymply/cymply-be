@@ -6,7 +6,7 @@ spring:
 
   app:
     host: http://34.64.182.180:8080
-    client: http://www.cymply.kr
+    client: http://localhost:3000
 
   h2:
     console:
@@ -34,7 +34,7 @@ spring:
         format_sql: true
         highlight_sql: true
         show_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.H2Dialect
 
   security:
     jwt:
