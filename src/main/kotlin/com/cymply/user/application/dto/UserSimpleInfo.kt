@@ -1,4 +1,4 @@
-package com.cymply.user.application.service
+package com.cymply.user.application.dto
 
 import com.cymply.user.domain.User
 

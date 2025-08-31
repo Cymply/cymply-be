@@ -28,6 +28,20 @@ interface UserApiController {
     ): com.cymply.common.response.ApiResponse<UserResponse>
 
 
+    @Operation(summary = "회원 탈퇴", description = "사용자의 정보를 삭제합니다.")
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "성공"),
+            ApiResponse(responseCode = "401", description = "잘못된 토큰이나 만료된 토큰인 경우"),
+            ApiResponse(responseCode = "404", description = "존재하지 않거나 유효하지 않은 회원인 경우"),
+        ]
+    )
+    @DeleteMapping("/me")
+    fun withdrawActiveUser(
+        @AuthenticationPrincipal principal: Jwt,
+    ): com.cymply.common.response.ApiResponse<String>
+
+
     @Operation(summary = "닉네임 중복 검사", description = "사용 가능한 닉네임을 검사합니다.")
     @ApiResponses(
         value = [

@@ -9,8 +9,8 @@ import jakarta.persistence.Enumerated
 @Embeddable
 data class UserEntityProfile(
     @Enumerated(EnumType.STRING)
-    val gender: Gender? = null,
+    val gender: Gender?,
 
     @Enumerated(EnumType.STRING)
-    val ageRange: UserProfile.AgeRange
+    val ageRange: UserProfile.AgeRange?
 )

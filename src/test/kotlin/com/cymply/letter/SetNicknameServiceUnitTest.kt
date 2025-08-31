@@ -8,7 +8,7 @@ import com.cymply.letter.application.port.out.SaveLetterNicknamePort
 import com.cymply.letter.application.service.SetLetterNicknameService
 import com.cymply.user.domain.RecipientCode
 import com.cymply.letter.domain.LetterNickname
-import com.cymply.user.application.service.UserSimpleInfo
+import com.cymply.user.application.dto.UserSimpleInfo
 import com.cymply.user.domain.User
 import io.mockk.every
 import io.mockk.mockk

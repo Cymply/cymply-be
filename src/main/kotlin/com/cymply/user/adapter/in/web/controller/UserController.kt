@@ -1,14 +1,10 @@
 package com.cymply.user.adapter.`in`.web.controller
 
 import com.cymply.common.response.ApiResponse
-import com.cymply.user.application.port.`in`.RegisterRecipientCodeUseCase
-import com.cymply.user.application.port.`in`.GetRecipientUseCase
 import com.cymply.user.adapter.`in`.web.dto.RecipientCodeResponse
 import com.cymply.user.adapter.`in`.web.dto.SignupRequest
 import com.cymply.user.adapter.`in`.web.dto.UserResponse
-import com.cymply.user.application.port.`in`.GetUserUseCase
-import com.cymply.user.application.port.`in`.RegisterUserUseCase
-import com.cymply.user.application.port.`in`.ValidateNicknameUseCase
+import com.cymply.user.application.port.`in`.*
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.*
@@ -20,8 +16,12 @@ class UserGetController(
     private val validateNicknameUseCase: ValidateNicknameUseCase,
     private val registerUserUseCase: RegisterUserUseCase,
     private val registerRecipientCodeUseCase: RegisterRecipientCodeUseCase,
-    private val getRecipientUseCase: GetRecipientUseCase
+    private val getRecipientUseCase: GetRecipientUseCase,
+    private val withdrawUserUserCase: WithdrawUserUserCase
 ) : UserApiController {
+    /**
+     * 회원 정보 조회
+     */
     override fun getMyAccount(
         @AuthenticationPrincipal principal: Jwt,
     ): ApiResponse<UserResponse> {
@@ -31,6 +31,9 @@ class UserGetController(
         return ApiResponse(true, ApiResponse.DataWrapper(content = response), null)
     }
 
+    /**
+     * 유효 닉네임 조회
+     */
     override fun checkAvailableNickname(
         @AuthenticationPrincipal principal: Jwt,
         nickname: String
@@ -42,6 +45,9 @@ class UserGetController(
         return ApiResponse.success(content = "사용 가능한 닉네임입니다.")
     }
 
+    /**
+     * OAuth2 회원 가입
+     */
     override fun signupOAuth2User(
         @AuthenticationPrincipal principal: Jwt,
         @RequestBody request: SignupRequest
@@ -55,8 +61,18 @@ class UserGetController(
     }
 
     /**
-     * TODO
-     * 편지 작성 폼 URL 사용 시 재조정 필요
+     * 회원 탈퇴
+     */
+    override fun withdrawActiveUser(
+        @AuthenticationPrincipal principal: Jwt,
+    ): ApiResponse<String> {
+        val id = principal.getClaimAsString("id").toLong()
+        withdrawUserUserCase.withdrawActiveUser(id)
+        return ApiResponse.success(content = "회원 탈퇴가 완료되었습니다.")
+    }
+
+    /**
+     * 수신자 코드 생성
      */
     override fun createRecipientCode(
         @AuthenticationPrincipal principal: Jwt,
@@ -67,6 +83,9 @@ class UserGetController(
         return ApiResponse.success(response)
     }
 
+    /**
+     * 수신자 정보 조회
+     */
     override fun getRecipient(
         @AuthenticationPrincipal principal: Jwt,
         code: String

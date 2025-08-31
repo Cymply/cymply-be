@@ -22,7 +22,10 @@ interface UserEntityMapper {
     fun from(user: UserEntity): User
 }
 
-@Mapper(componentModel = "spring")
+@Mapper(
+    componentModel = "spring",
+    injectionStrategy = InjectionStrategy.CONSTRUCTOR
+)
 interface UserEntityProfileMapper {
     fun from(profile: UserProfile): UserEntityProfile
 
