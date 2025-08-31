@@ -3,8 +3,8 @@ package com.cymply.user.domain
 import com.cymply.common.model.Gender
 
 data class UserProfile(
-    val gender: Gender? = null,
-    val ageRange: AgeRange? = null
+    val gender: Gender?,
+    val ageRange: AgeRange?
 ) {
     enum class AgeRange(
         val start: Int,

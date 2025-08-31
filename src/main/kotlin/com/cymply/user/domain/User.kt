@@ -8,7 +8,7 @@ abstract class User(
     val nickname: String,
     val role: Role,
     val profile: UserProfile?,
-    val deletedAt: LocalDateTime? = null
+    var deletedAt: LocalDateTime? = null
 ) {
     enum class Role {
         USER,
@@ -21,6 +21,11 @@ abstract class User(
         if (isDeletedUser()) {
             throw IllegalArgumentException("Already withdraw, User: $id")
         }
+    }
+
+    fun withdraw() {
+        verifyValidUser();
+        deletedAt = LocalDateTime.now()
     }
 
     fun isDeletedUser() = deletedAt != null

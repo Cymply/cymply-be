@@ -1,5 +1,6 @@
 package com.cymply.user.application.service
 
+import com.cymply.user.application.dto.UserSimpleInfo
 import com.cymply.user.application.port.`in`.GetRecipientUseCase
 import com.cymply.user.application.port.out.LoadRecipientCodePort
 import com.cymply.user.application.port.out.LoadUserPort

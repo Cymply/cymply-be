@@ -73,7 +73,7 @@ class ValidateNicknameServiceUnitTest {
             role = User.Role.USER,
             nickname = nickname,
             email = "gildong@cymply.com",
-            profile = UserProfile(),
+            profile = UserProfile(null, null),
             sub = UUID.randomUUID().toString(),
             provider = UserProvider.GOOGLE
         )

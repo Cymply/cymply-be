@@ -4,8 +4,8 @@ spring:
       on-profile: prod
 
   app:
-    host: http://api.cymply.kr
-    client: http://www.cymply.kr
+    host: https://api.cymply.kr
+    client: https://www.cymply.kr
 
   datasource:
     url: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
