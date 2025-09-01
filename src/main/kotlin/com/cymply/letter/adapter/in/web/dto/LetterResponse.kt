@@ -18,8 +18,8 @@ data class LetterResponse(
     @field:Schema(description = "편지 내용", example = "안녕 테스터!")
     val content: String,
 
-//    @field:Schema(description = "전송 시각 (ISO 8601 형식)", example = "2025-06-01T12:00:00")
-//    val sentAt: LocalDateTime,
+    @field:Schema(description = "편지 발송 코드", example = "ABCD")
+    val recipientCode: String?,
 
     @field:Schema(implementation = MusicResponse::class)
     val music: MusicResponse
@@ -31,6 +31,7 @@ data class LetterResponse(
                 senderId = result.senderId,
                 title = result.title,
                 content = result.content,
+                recipientCode = result.recipientCode,
                 music = MusicResponse(
                     title = result.musicTitle,
                     artist = result.musicArtist,
