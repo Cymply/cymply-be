@@ -5,6 +5,7 @@ import com.cymply.letter.application.port.`in`.GetLetterUseCase
 import com.cymply.letter.application.port.out.LoadLetterPort
 import com.cymply.letter.application.port.out.SaveLetterPort
 import com.cymply.music.application.port.`in`.GetMusicUseCase
+import com.cymply.user.application.port.out.LoadRecipientCodePort
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,6 +13,7 @@ class GetLetterService(
     private val loadLetterPort: LoadLetterPort,
     private val saveLetterPort: SaveLetterPort,
     private val getMusicUseCase: GetMusicUseCase,
+    private val loadRecipientCodePort: LoadRecipientCodePort,
 ) : GetLetterUseCase {
 
     override fun getLetter(query: GetLetterQuery): GetLetterResult {
@@ -25,8 +27,9 @@ class GetLetterService(
         }
 
         val music = getMusicUseCase.getMusic(letter.musicId)
+        val recipientCode = loadRecipientCodePort.load(letter.senderId)
 
-        return GetLetterResult.toResult(letter, music)
+        return GetLetterResult.toResult(letter, music, recipientCode)
     }
 
     override fun getLetters(userId: Long): List<LetterSummary> {

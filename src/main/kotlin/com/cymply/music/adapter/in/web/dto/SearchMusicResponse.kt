@@ -13,14 +13,14 @@ data class SearchMusicResponse(
     val artist: String,
 
     @field:Schema(description = "음악 썸네일 url", example = "www.example.com")
-    val thumbnail: String?,
+    val thumbnailUrl: String?,
 ) {
     companion object {
         fun from(result: SearchMusicResult): SearchMusicResponse =
             SearchMusicResponse(
                 title = result.title,
                 artist = result.artist,
-                thumbnail = result.thumbnail
+                thumbnailUrl = result.thumbnailUrl
             )
     }
 }

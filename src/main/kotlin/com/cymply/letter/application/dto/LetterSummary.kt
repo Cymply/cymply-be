@@ -8,7 +8,7 @@ data class LetterSummary(
     val letterId: Long,
     val musicTitle: String,
     val musicArtist: String,
-    val musicThumbnailUrl: String,
+    val thumbnailUrl: String,
     val videoUrl: String,
     val title: String,
     val content: String,
