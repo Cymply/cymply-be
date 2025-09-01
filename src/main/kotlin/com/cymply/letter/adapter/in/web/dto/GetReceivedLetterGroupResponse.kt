@@ -34,7 +34,7 @@ data class GetReceivedLetterGroupResponse(
                                 letterId = it.letterId,
                                 musicTitle = it.musicTitle,
                                 musicArtist = it.musicArtist,
-                                musicThumbnailUrl = it.musicThumbnailUrl,
+                                thumbnailUrl = it.thumbnailUrl,
                                 videoUrl = it.videoUrl,
                                 content = it.content,
                                 title = it.title,
@@ -61,7 +61,7 @@ data class ReceivedLetterDetailResponse(
     val musicArtist: String,
 
     @field:Schema(description = "음악 썸네일 URL", example = "http://example.com")
-    val musicThumbnailUrl: String,
+    val thumbnailUrl: String,
 
     @field:Schema(description = "음악 재생 URL", example = "http://example.com")
     val videoUrl: String,

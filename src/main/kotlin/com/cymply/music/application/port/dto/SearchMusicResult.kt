@@ -6,7 +6,7 @@ data class SearchMusicResult(
     val title: String,
     val artist: String,
     val album: String?,
-    val thumbnail: String?,
+    val thumbnailUrl: String?,
 ) {
     companion object {
         fun toResult(music: Music): SearchMusicResult =
@@ -14,7 +14,7 @@ data class SearchMusicResult(
                 title = music.title,
                 artist = music.artist,
                 album = music.album,
-                thumbnail = music.thumbnailUrl
+                thumbnailUrl = music.thumbnailUrl
             )
     }
 }

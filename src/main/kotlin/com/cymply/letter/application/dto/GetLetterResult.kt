@@ -2,6 +2,7 @@ package com.cymply.letter.application.dto
 
 import com.cymply.letter.domain.Letter
 import com.cymply.music.application.port.dto.GetMusicResult
+import com.cymply.user.domain.RecipientCode
 
 data class GetLetterResult(
     val id: Long,
@@ -12,9 +13,10 @@ data class GetLetterResult(
     val musicArtist: String,
     val musicThumbnailUrl: String,
     val musicVideoUrl: String,
+    val recipientCode: String? = null,
 ) {
     companion object {
-        fun toResult(letter: Letter, music: GetMusicResult): GetLetterResult =
+        fun toResult(letter: Letter, music: GetMusicResult, recipientCode: RecipientCode?): GetLetterResult =
             GetLetterResult(
                 id = letter.id!!,
                 senderId = letter.senderId,
@@ -23,7 +25,8 @@ data class GetLetterResult(
                 musicTitle = music.title,
                 musicArtist = music.artist,
                 musicThumbnailUrl = music.thumbnailUrl,
-                musicVideoUrl = music.videoUrl
+                musicVideoUrl = music.videoUrl,
+                recipientCode = recipientCode?.code,
             )
     }
 }
