@@ -12,8 +12,6 @@ class OAuth2UserEntity(
     email: String,
     nickname: String,
     profile: UserEntityProfile?,
-
-    @Column(unique = true)
     val sub: String,
 
     @Enumerated(EnumType.STRING)
