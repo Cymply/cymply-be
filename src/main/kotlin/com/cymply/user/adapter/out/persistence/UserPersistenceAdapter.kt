@@ -21,12 +21,9 @@ class UserPersistenceAdapter(
         return userEntityMapper.from(entity)
     }
 
-    override fun loadUserBySubAndProvider(sub: String, provider: UserProvider): User? {
-        val entity = oAuth2UserJpaRepository.findBySubAndProvider(sub, provider)
-        if (entity != null) {
-            return userEntityMapper.from(entity)
-        }
-        return null
+    override fun loadUserBySubAndProvider(sub: String, provider: UserProvider): List<User> {
+        val entities = oAuth2UserJpaRepository.findBySubAndProvider(sub, provider)
+        return entities.map { userEntityMapper.from(it) }
     }
 
     override fun loadUserByNickname(nickname: String): User? {

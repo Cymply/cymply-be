@@ -6,7 +6,7 @@ import com.cymply.user.domain.UserProvider
 interface LoadUserPort {
     fun loadUserById(id: Long): User
 
-    fun loadUserBySubAndProvider(sub: String, provider: UserProvider): User?
+    fun loadUserBySubAndProvider(sub: String, provider: UserProvider): List<User>
 
     fun loadUserByNickname(nickname: String): User?
 }

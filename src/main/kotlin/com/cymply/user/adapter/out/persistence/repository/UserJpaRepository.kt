@@ -10,5 +10,5 @@ interface UserJpaRepository : JpaRepository<UserEntity, Long> {
 }
 
 interface OAuth2UserJpaRepository : JpaRepository<OAuth2UserEntity, Long> {
-    fun findBySubAndProvider(sub: String, provider: UserProvider): OAuth2UserEntity?
+    fun findBySubAndProvider(sub: String, provider: UserProvider): List<OAuth2UserEntity>
 }

@@ -19,23 +19,26 @@ class RegisterUserService(
     @Transactional
     override fun registerOAuth2User(command: RegisterOAuth2UserCommand): Long {
         val provider = UserProvider.valueOf(command.provider.uppercase())
-        val exist = loadUserPort.loadUserBySubAndProvider(command.sub, provider)
 
-        if (exist == null || exist.isDeletedUser()) {
-            val profile = UserProfile(
-                command.gender,
-                command.ageRange?.let { UserProfile.AgeRange.from(it) }
-            )
-            val user = OAuth2User.of(
-                sub = command.sub,
-                provider = provider,
-                role = User.Role.USER,
-                email = command.email,
-                nickname = command.nickname,
-                profile = profile
-            )
-            return saveUserPort.saveUser(user)
+        val exist = loadUserPort.loadUserBySubAndProvider(command.sub, provider)
+            .find { !it.isDeletedUser() }
+
+        if (exist != null) {
+            return 0
         }
-        return 0
+
+        val profile = UserProfile(
+            command.gender,
+            command.ageRange?.let { UserProfile.AgeRange.from(it) }
+        )
+        val user = OAuth2User.of(
+            sub = command.sub,
+            provider = provider,
+            role = User.Role.USER,
+            email = command.email,
+            nickname = command.nickname,
+            profile = profile
+        )
+        return saveUserPort.saveUser(user)
     }
 }
